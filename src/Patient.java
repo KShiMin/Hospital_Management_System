@@ -1,17 +1,26 @@
 public class Patient {
     // Variables
-    private Integer id;
-    protected String first_name;
-    protected String last_name;
-    private String billing_add;
-    private Integer phone_num;
-    protected String nationality;
-    protected String sex;
-    private String email;
+    private String id, first_name, last_name, billing_add, nationality, phone_num;
 
-    // Getter & Setters
-    public void setId(Integer nric){
-        this.id = nric;
+    
+    // Default constructor
+    public Patient(){
+        this("None", "None", "None", "None", "None", "00000000");
+    }
+
+    // Constructor
+    public Patient(String id, String first_name, String last_name, String billing_add, String nationality, String phone_num){
+        this.id = id;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.billing_add = billing_add;
+        this.nationality = nationality;
+        this.phone_num = phone_num;
+    }
+
+    // Setters
+    public void setId(String id){
+        this.id = id;
     };
 
     public void setName(String firstName, String lastName){
@@ -23,7 +32,7 @@ public class Patient {
         this.billing_add = add;
     };
 
-    public void setPhoneNum(Integer number){
+    public void setPhoneNum(String number){
         this.phone_num = number;
     };
 
@@ -31,8 +40,37 @@ public class Patient {
         this.nationality = nationality;
     };
 
-    public void setSex(String sex){
-        this.sex = sex;
+    // Getters
+    public String getId(){
+        return this.id;
     };
+
+    public String getFirstName(){
+        return this.first_name;
+    }
+
+    public String getLastName(){
+        return this.last_name;
+    }
+
+    public String getBillAdd(){
+        return this.billing_add;
+    }
+
+    public String getPhoneNum(){
+        return this.phone_num;
+    }
+
+    public String getNationality(){
+        return this.nationality;
+    }
+
+    public void displayPatientInfo(){
+        System.out.println("Patient ID: " + this.id);
+        System.out.println("Full Name: " + this.first_name + " " + this.last_name);
+        System.out.println("Billing Address: " + this.billing_add);
+        System.out.println("Phone Number: " +this.phone_num);
+        System.out.println("Nationality: " + this.nationality);
+    }
 
 }
