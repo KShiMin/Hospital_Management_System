@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Invoice {
     // Attributes
@@ -48,24 +50,45 @@ public class Invoice {
         this.additionalNotes = additionalNotes;
     }
 
-    // toString() method for displaying invoice details
-    @Override
-    public String toString() {
-        return "Invoice{" +
-                "Invoice ID='" + invoiceId + '\'' +
-                ", Billing Date=" + billingDate +
-                ", Billing Address='" + billingAddress + '\'' +
-                ", Additional Notes='" + additionalNotes + '\'' +
-                '}';
+    // Method to print invoice details
+    public void printInvoice() {
+        System.out.println(this.toString());
     }
 
-    // Example method to print a formatted invoice
-    public void printInvoice() {
-        System.out.println("==== Invoice Details ====");
-        System.out.println("Invoice ID: " + invoiceId);
-        System.out.println("Billing Date: " + billingDate);
-        System.out.println("Billing Address: " + billingAddress);
-        System.out.println("Additional Notes: " + additionalNotes);
-        System.out.println("==========================");
+    // toString method for displaying invoice details
+    @Override
+    public String toString() {
+        return "Invoice Details:\n" +
+                "Invoice ID: " + invoiceId + "\n" +
+                "Billing Date: " + billingDate + "\n" +
+                "Billing Address: " + billingAddress + "\n" +
+                "Additional Notes: " + additionalNotes + "\n";
+    }
+
+    //for testing
+    public static void main(String[] args) {
+        // List to store invoices
+        List<Invoice> invoiceList = new ArrayList<>();
+
+        // Adding invoices
+        Invoice invoice1 = new Invoice("INV12345", new Date(), "123 Main Street, City, Country", "Pay by end of the month.");
+        Invoice invoice2 = new Invoice("INV12346", new Date(), "456 Elm Street, City, Country", "Pay within two weeks.");
+
+        invoiceList.add(invoice1);
+        invoiceList.add(invoice2);
+
+        System.out.println("Invoices after adding:");
+        for (Invoice invoice : invoiceList) {
+            invoice.printInvoice();
+        }
+
+        // Removing an invoice by ID
+        String idToRemove = "INV12345";
+        invoiceList.removeIf(invoice -> invoice.getInvoiceId().equals(idToRemove));
+
+        System.out.println("Invoices after removal:");
+        for (Invoice invoice : invoiceList) {
+            invoice.printInvoice();
+        }
     }
 }

@@ -5,8 +5,8 @@ public class Main {
         Invoice invoice = new Invoice(
                 "INV12345",
                 new Date(),
-                "123 Main Street, Springfield, USA",
-                "Payment due in 30 days."
+                "123 Main Street, Tampines, SG",
+                "Payment due in 31 days."
         );
 
         // Display details
