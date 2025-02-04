@@ -8,6 +8,9 @@ public class Invoice {
     private Date billingDate;
     private String billingAddress;
     private String additionalNotes;
+    private double totalAmount;
+    private int discount;
+    private int taxRate;
 
     // Constructor
     public Invoice(String invoiceId, Date billingDate, String billingAddress, String additionalNotes) {
@@ -18,61 +21,62 @@ public class Invoice {
     }
 
     // Getters and Setters
-    public String getInvoiceId() {
-        return invoiceId;
+    public String getInvoiceId() { return invoiceId; }
+    public void setInvoiceId(String invoiceId) { this.invoiceId = invoiceId; }
+
+    public Date getBillingDate() { return billingDate; }
+    public void setBillingDate(Date billingDate) { this.billingDate = billingDate; }
+
+    public String getBillingAddress() { return billingAddress; }
+    public void setBillingAddress(String billingAddress) { this.billingAddress = billingAddress; }
+
+    public String getAdditionalNotes() { return additionalNotes; }
+    public void setAdditionalNotes(String additionalNotes) { this.additionalNotes = additionalNotes; }
+
+    public void setBillingDetails(double totalAmount, int discount, int taxRate) {
+        this.totalAmount = totalAmount;
+        this.discount = discount;
+        this.taxRate = taxRate;
     }
 
-    public void setInvoiceId(String invoiceId) {
-        this.invoiceId = invoiceId;
+    // Calculation methods
+    public double calculateDiscountAmount() { return (totalAmount * discount) / 100.0; }
+    public double calculateTaxAmount() {
+        double amountAfterDiscount = totalAmount - calculateDiscountAmount();
+        return (amountAfterDiscount * taxRate) / 100.0;
+    }
+    public double calculateGrandTotal() {
+        double amountAfterDiscount = totalAmount - calculateDiscountAmount();
+        return amountAfterDiscount + calculateTaxAmount();
     }
 
-    public Date getBillingDate() {
-        return billingDate;
-    }
-
-    public void setBillingDate(Date billingDate) {
-        this.billingDate = billingDate;
-    }
-
-    public String getBillingAddress() {
-        return billingAddress;
-    }
-
-    public void setBillingAddress(String billingAddress) {
-        this.billingAddress = billingAddress;
-    }
-
-    public String getAdditionalNotes() {
-        return additionalNotes;
-    }
-
-    public void setAdditionalNotes(String additionalNotes) {
-        this.additionalNotes = additionalNotes;
-    }
-
-    // Method to print invoice details
+    // Print neatly formatted invoice details
     public void printInvoice() {
-        System.out.println(this.toString());
+        System.out.println("==============================");
+        System.out.println("          Invoice Details     ");
+        System.out.println("==============================");
+        System.out.printf("Invoice ID: %-20s\n", invoiceId);
+        System.out.printf("Billing Date: %-20s\n", billingDate);
+        System.out.printf("Billing Address: %-20s\n", billingAddress);
+        System.out.printf("Additional Notes: %-20s\n", additionalNotes);
+        System.out.println("--------------------------------");
+        System.out.printf("Total Amount: $%.2f\n", totalAmount);
+        System.out.printf("Discount (%d%%): -$%.2f\n", discount, calculateDiscountAmount());
+        System.out.printf("Tax (%d%%): +$%.2f\n", taxRate, calculateTaxAmount());
+        System.out.println("--------------------------------");
+        System.out.printf("Grand Total: $%.2f\n", calculateGrandTotal());
+        System.out.println("==============================");
     }
 
-    // toString method for displaying invoice details
-    @Override
-    public String toString() {
-        return "Invoice Details:\n" +
-                "Invoice ID: " + invoiceId + "\n" +
-                "Billing Date: " + billingDate + "\n" +
-                "Billing Address: " + billingAddress + "\n" +
-                "Additional Notes: " + additionalNotes + "\n";
-    }
-
-    //for testing
+    // For testing
     public static void main(String[] args) {
-        // List to store invoices
         List<Invoice> invoiceList = new ArrayList<>();
 
-        // Adding invoices
         Invoice invoice1 = new Invoice("INV12345", new Date(), "123 Main Street, City, Country", "Pay by end of the month.");
+        invoice1.setBillingDetails(1000, 10, 5);
+
         Invoice invoice2 = new Invoice("INV12346", new Date(), "456 Elm Street, City, Country", "Pay within two weeks.");
+        invoice2.setBillingDetails(2000, 15, 8);
 
         invoiceList.add(invoice1);
         invoiceList.add(invoice2);
@@ -82,7 +86,6 @@ public class Invoice {
             invoice.printInvoice();
         }
 
-        // Removing an invoice by ID
         String idToRemove = "INV12345";
         invoiceList.removeIf(invoice -> invoice.getInvoiceId().equals(idToRemove));
 
