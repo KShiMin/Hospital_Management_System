@@ -43,7 +43,11 @@ public class Patient {
     // Getters
     public String getId(){
         return this.id;
-    };
+    }
+
+    public String getName(){
+        return this.first_name + " " + this.last_name;
+    }
 
     public String getFirstName(){
         return this.first_name;
