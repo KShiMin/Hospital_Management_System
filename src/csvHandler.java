@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ public class csvHandler {
     
     private List<Patient> patientData = new ArrayList<>();
 
+    // Constructor
     public csvHandler(){
         
     }
