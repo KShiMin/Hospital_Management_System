@@ -5,17 +5,17 @@ public class Patient {
     
     // Default constructor
     public Patient(){
-        this("None", "None", "None", "None", "None", "00000000");
+        this("None", "None", "None", "None", "00000000", "None");
     }
 
     // Constructor
-    public Patient(String id, String first_name, String last_name, String billing_add, String nationality, String phone_num){
+    public Patient(String id, String first_name, String last_name, String billing_add, String phone_num, String nationality){
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.billing_add = billing_add;
-        this.nationality = nationality;
         this.phone_num = phone_num;
+        this.nationality = nationality;
     }
 
     // Setters
@@ -73,8 +73,10 @@ public class Patient {
         System.out.println("Patient ID: " + this.id);
         System.out.println("Full Name: " + this.first_name + " " + this.last_name);
         System.out.println("Billing Address: " + this.billing_add);
-        System.out.println("Phone Number: " +this.phone_num);
         System.out.println("Nationality: " + this.nationality);
+        System.out.println("Phone Number: " +this.phone_num);
     }
+
+
 
 }
