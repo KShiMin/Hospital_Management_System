@@ -1,6 +1,10 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Patient {
     // Variables
     private String id, first_name, last_name, billing_add, nationality, phone_num;
+    private List<Service> servicesReceived; // Stores multiple services
 
     
     // Default constructor
@@ -16,29 +20,38 @@ public class Patient {
         this.billing_add = billing_add;
         this.phone_num = phone_num;
         this.nationality = nationality;
+        this.servicesReceived = new ArrayList<>();
+    }
+
+    // Add a service for the patient
+    public void addService(Service service) {
+        servicesReceived.add(service);
     }
 
     // Setters
     public void setId(String id){
         this.id = id;
-    };
+    }
 
-    public void setName(String firstName, String lastName){
+    public void setFirstName(String firstName){
         this.first_name = firstName;
-        this.last_name = lastName;
-    };
+    }
 
+    public void setLastName(String lastName){
+        this.last_name = lastName;
+    }
+    
     public void setBillAddress(String add){
         this.billing_add = add;
-    };
+    }
 
     public void setPhoneNum(String number){
         this.phone_num = number;
-    };
+    }
 
     public void setNationaity(String nationality){
         this.nationality = nationality;
-    };
+    }
 
     // Getters
     public String getId(){
@@ -69,6 +82,10 @@ public class Patient {
         return this.nationality;
     }
 
+   public List<Service> getServicesReceived() {
+        return servicesReceived;
+    }
+
     public void displayPatientInfo(){
         System.out.println("Patient ID: " + this.id);
         System.out.println("Full Name: " + this.first_name + " " + this.last_name);
@@ -77,6 +94,11 @@ public class Patient {
         System.out.println("Phone Number: " +this.phone_num);
     }
 
-
+    public void displayAllServicesReceived(){
+        System.out.println(this.getName() + " received the following services today:");
+        for(Service s:this.servicesReceived){
+            System.out.println(s);
+        }
+    }
 
 }
