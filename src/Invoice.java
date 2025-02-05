@@ -8,16 +8,18 @@ public class Invoice {
     private Date billingDate;
     private String billingAddress;
     private String additionalNotes;
-    private double grandTotal;
+    private double totalAmount;
     private int discount;
     private int taxRate;
     private Patient patient;
+    private List<Service> services;
 
     // Constructor
     public Invoice(String invoiceId, Date billingDate, Patient patient, String additionalNotes) {
         this.invoiceId = invoiceId;
         this.billingDate = billingDate;
         this.patient = patient;
+        this.services = new ArrayList<>();
         this.billingAddress = patient.getBillAdd();
         this.additionalNotes = additionalNotes;
     }
@@ -60,22 +62,33 @@ public class Invoice {
         this.patient = patient;
     }
 
-    public void setBillingDetails(double grandTotal, int discount, int taxRate) {
-        this.grandTotal = grandTotal;
+    public void addService(Service service) {
+        services.add(service);
+    }
+
+    public double calculateTotalAmount() {
+        totalAmount = 0;
+        for (Service service : services) {
+            totalAmount += service.calculatePrice();
+        }
+        return totalAmount;
+    }
+
+    public void setBillingDetails(int discount, int taxRate) {
         this.discount = discount;
         this.taxRate = taxRate;
     }
 
     // Calculation methods
     public double calculateDiscountAmount() {
-        return (grandTotal * discount) / 100.0;
+        return (totalAmount * discount) / 100.0;
     }
     public double calculateTaxAmount() {
-        double amountAfterDiscount = grandTotal - calculateDiscountAmount();
+        double amountAfterDiscount = totalAmount - calculateDiscountAmount();
         return (amountAfterDiscount * taxRate) / 100.0;
     }
     public double calculateGrandTotal() {
-        double amountAfterDiscount = grandTotal - calculateDiscountAmount();
+        double amountAfterDiscount = totalAmount - calculateDiscountAmount();
         return amountAfterDiscount + calculateTaxAmount();
     }
 
@@ -92,7 +105,19 @@ public class Invoice {
         System.out.printf("Patient Name: %-20s\n", patient.getName());
         System.out.printf("Phone Number: %-20s\n", patient.getPhoneNum());
         System.out.printf("Nationality: %-20s\n", patient.getNationality());
-        System.out.printf("Grand Total (Before Discounts and Tax): $%.2f\n", grandTotal);
+        System.out.println("--------------------------------");
+        int index = 0;
+        for (Service service : services) {
+            System.out.printf("%d. \n", index+1);
+            System.out.printf("Service Code: %-20s\n", service.getServiceCode());
+            System.out.printf("Service Description: %-20s\n", service.getServiceDescript());
+            System.out.printf("Service Date: %-20s\n", service.getServiceDate());
+            System.out.printf("Quantity: %d\n", service.getQuantity());
+            System.out.printf("Unit Price: %.2f\n", service.getUnitPrice());
+            index ++;
+        }
+        System.out.println("--------------------------------");
+        System.out.printf("Total Amount (Before Discounts and Tax): $%.2f\n", calculateTotalAmount());
         System.out.printf("Discount (%d%%): -$%.2f\n", discount, calculateDiscountAmount());
         System.out.printf("Tax (%d%%): +$%.2f\n", taxRate, calculateTaxAmount());
         System.out.println("--------------------------------");
@@ -106,11 +131,14 @@ public class Invoice {
 
         Patient patient1 = new Patient("P001", "John", "Doe", "123 Main Street, City, Country", "American", "12345678");
         Invoice invoice1 = new Invoice("INV12345", new Date(), patient1, "Pay by end of the month.");
-        invoice1.setBillingDetails(1000, 10, 5);
+        invoice1.addService(new Service("svc123", "Doctor Consult", new Date(), 1, 30.00));
+        invoice1.setBillingDetails(10, 5);
 
         Patient patient2 = new Patient("P002", "Jane", "Smith", "456 Elm Street, City, Country", "British", "87654321");
         Invoice invoice2 = new Invoice("INV12346", new Date(), patient2, "Pay within two weeks.");
-        invoice2.setBillingDetails(2000, 15, 8);
+        invoice2.addService(new Service("svc456", "Blood Test", new Date(), 2, 50.00));
+        invoice2.addService(new Service("svc789", "Medication", new Date(), 1, 15.00));
+        invoice2.setBillingDetails(15, 8);
 
 
         invoiceList.add(invoice1);
