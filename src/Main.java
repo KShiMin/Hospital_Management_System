@@ -29,12 +29,14 @@ public class Main {
         patientList.add(p2);
         patientList.add(p3);
         patientList.add(p4);
+
   
         serviceList.add(s1);
         serviceList.add(s2);
         serviceList.add(s3);
 
         c.saveToFile(patientList, serviceList);
+
     }
 
     public static void main(String[] args) {
@@ -51,6 +53,25 @@ public class Main {
         // displayAllPatient(patientList);
         // System.out.println("\n");
         // patientList.get(0).displayPatientInfo();
+
+
+        // Creating invoices for patients
+        List<Invoice> invoiceList = new ArrayList<>();
+
+        int taxRateP1 = (p1.getNationality().equals("Singaporean") || p1.getNationality().equals("Permanent Resident")) ? 0 : 9;
+        Invoice invoice1 = new Invoice("INV001", new Date(), p1, "Pay by next week");
+        invoice1.setBillingDetails(1200, 10, taxRateP1);
+
+        int taxRateP2 = (p2.getNationality().equals("Singaporean") || p2.getNationality().equals("Permanent Resident")) ? 0 : 9;
+        Invoice invoice2 = new Invoice("INV002", new Date(), p2, "Immediate payment required");
+        invoice2.setBillingDetails(1800, 15, taxRateP2);
+
+        invoiceList.add(invoice1);
+        invoiceList.add(invoice2);
+
+        // Display invoices
+        for (Invoice invoice : invoiceList) {
+            invoice.printInvoice();
 
         
     }
