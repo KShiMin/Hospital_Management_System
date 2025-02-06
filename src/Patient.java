@@ -1,10 +1,6 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Patient {
     // Variables
     private String id, first_name, last_name, billing_add, nationality, phone_num;
-    private List<Service> servicesReceived; // Stores multiple services
 
     
     // Default constructor
@@ -20,12 +16,6 @@ public class Patient {
         this.billing_add = billing_add;
         this.phone_num = phone_num;
         this.nationality = nationality;
-        this.servicesReceived = new ArrayList<>();
-    }
-
-    // Add a service for the patient
-    public void addService(Service service) {
-        servicesReceived.add(service);
     }
 
     // Setters
@@ -82,10 +72,6 @@ public class Patient {
         return this.nationality;
     }
 
-   public List<Service> getServicesReceived() {
-        return servicesReceived;
-    }
-
     public void displayPatientInfo(){
         System.out.println("Patient ID: " + this.id);
         System.out.println("Full Name: " + this.first_name + " " + this.last_name);
@@ -94,11 +80,5 @@ public class Patient {
         System.out.println("Phone Number: " +this.phone_num);
     }
 
-    public void displayAllServicesReceived(){
-        System.out.println(this.getName() + " received the following services today:");
-        for(Service s:this.servicesReceived){
-            System.out.println(s);
-        }
-    }
 
 }

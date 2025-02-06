@@ -1,5 +1,4 @@
 import java.util.Date;
-import java.text.SimpleDateFormat;
 
 public class Service {
 
@@ -11,7 +10,7 @@ public class Service {
 
     // Constructors
     public Service(){
-        this("None", "None", new Date(), 0, 0.00);
+        this("None", "None", null, 0, 0.00);
     }
 
     public Service(String sc, String sd, Date sdate, int q, double pr){

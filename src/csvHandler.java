@@ -15,26 +15,43 @@ public class csvHandler {
     }
 
     // For simulation purpose
-    public void savePatient(List<Patient> pb){
-        
-        PrintWriter writer = null;
-
-        try{
-            writer = new PrintWriter("./data/patients.csv", "UTF-8");
-            for(Patient p: pb){
-                String patientStr = String.format("%s,%s,%s,%s,%s,%s", p.getId(), p.getFirstName(), p.getLastName(), p.getBillAdd(), p.getPhoneNum(), p.getNationality());
-                writer.println(patientStr);
+    public void saveToFile(List<Patient> pd, List<Service> sd) {
+        List<String> filepaths = new ArrayList<>();
+    
+        if (pd.size() != 0) {
+            filepaths.add("./data/patients.csv");
+        }
+        if (sd.size() != 0) {
+            filepaths.add("./data/services.csv");
+        }
+    
+        if (!filepaths.isEmpty()) {
+            try {
+                for (String fp : filepaths) {
+                    PrintWriter writer = new PrintWriter(fp, "UTF-8");
+                    
+                    if (fp.equals("./data/patients.csv")) {
+                        System.out.println("Saving Patient Data...");
+                        for (Patient p : pd) {
+                            String patientStr = String.format("%s,%s,%s,%s,%s,%s", p.getId(), p.getFirstName(), p.getLastName(), 
+                                p.getBillAdd(), p.getPhoneNum(), p.getNationality());
+                            writer.println(patientStr);
+                        }
+                    } else if (fp.equals("./data/services.csv")) {
+                        System.out.println("Saving Service Data...");
+                        for (Service s : sd) {
+                            String serviceStr = String.format("%s,%s,%s", s.getServiceCode(), s.getServiceDescript(), s.getUnitPrice());
+                            writer.println(serviceStr);
+                        }
+                    }
+                    
+                    writer.close();
+                }
+            } catch (IOException e) {
+                System.out.println("Error saving file: " + e.getMessage());
             }
-
-        } catch(IOException e){
-            System.out.println("Error saving patient: " + e.getMessage());
-
-        } finally{
-
-            // Ensure that only writer with an object and not null is closed
-            if(writer != null){
-                writer.close();
-            }
+        } else {
+            System.out.println("No data to save.");
         }
     }
 
@@ -55,8 +72,5 @@ public class csvHandler {
 
         return patientData;
     }
-    
-    public void displayData(){
         
-    }
 }
