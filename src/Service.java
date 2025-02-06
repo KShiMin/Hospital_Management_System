@@ -68,7 +68,7 @@ public class Service {
         return this.quantity * this.unitPrice;
     }
 
-    // Display individual Services
+    // Display individual service
     public void displayService() {
         System.out.println("Service Code: " + this.serviceCode);
         System.out.println("Service Description: " + this.serviceDescript);
