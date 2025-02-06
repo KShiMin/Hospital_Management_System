@@ -15,6 +15,7 @@ public class Main {
   
     private static void testData(csvHandler c){
         List<Patient> patientList = new ArrayList<>();
+        List<Service> serviceList = new ArrayList<>();
         
         Patient p1 = new Patient("P01", "Jack", "Neo", "BLK 19 MARSILING LANE #02-305 Singapore 730019", "81123456", "Singaporean");
         Patient p2 = new Patient("P02", "Mary", "Tan", "BLK 213 HOUGANG ST 21 #01-367 Singapore 530213", "92223546", "Singaporean");

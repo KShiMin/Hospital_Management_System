@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Patient {
     // Variables
     private String id, first_name, last_name, billing_add, nationality, phone_num;
