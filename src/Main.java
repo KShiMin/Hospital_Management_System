@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 public class Main {
 
@@ -11,7 +12,8 @@ public class Main {
         }
     }
 
-    private static void testPatientData(csvHandler c){
+  
+    private static void testData(csvHandler c){
         List<Patient> patientList = new ArrayList<>();
         
         Patient p1 = new Patient("P01", "Jack", "Neo", "BLK 19 MARSILING LANE #02-305 Singapore 730019", "81123456", "Singaporean");
@@ -19,25 +21,37 @@ public class Main {
         Patient p3 = new Patient("P03", "Tommy", "Arnold", "34 WHAMPOA WEST #05-15 Singapore 330034", "88833316", "Permanent Resident");
         Patient p4 = new Patient("P04", "Dennis", "Anderson", "3 COLEMAN STREET #18-22 Singapore 179804", "97234569", "Foreigner");
         
+        Service s1 = new Service("svc123", "Doctor Consult", null, 0, 30.00);
+        Service s2 = new Service("svc456", "Blood Test", null, 0, 50.00);
+        Service s3 = new Service("svc789", "Medication", null, 0, 15.00);
+
         patientList.add(p1);
         patientList.add(p2);
         patientList.add(p3);
         patientList.add(p4);
+  
+        serviceList.add(s1);
+        serviceList.add(s2);
+        serviceList.add(s3);
 
-        c.savePatient(patientList);
+        c.saveToFile(patientList, serviceList);
     }
 
     public static void main(String[] args) {
         
         csvHandler dh = new csvHandler();
         
-        // Generation of test datas
-        // testPatientData(dh);
-        List<Patient> patientList = dh.setPatient();
+        // Test
+        // testData(dh);
+        // List<Patient> patientList = dh.setPatient();
+        // List<Service> servicesList = dh.setService();
+        // servicesList.get(0).setServiceDate(new Date());
+        // servicesList.get(0).setQuantity(1);
+        // servicesList.get(0).displayService();
+        // displayAllPatient(patientList);
+        // System.out.println("\n");
+        // patientList.get(0).displayPatientInfo();
 
-        displayAllPatient(patientList);
-        System.out.println("\n");
-        patientList.get(0).displayPatientInfo();
         
     }
 }
