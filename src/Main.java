@@ -60,11 +60,14 @@ public class Main {
 
         int taxRateP1 = (p1.getNationality().equals("Singaporean") || p1.getNationality().equals("Permanent Resident")) ? 0 : 9;
         Invoice invoice1 = new Invoice("INV001", new Date(), p1, "Pay by next week");
-        invoice1.setBillingDetails(1200, 10, taxRateP1);
+        invoice1.addService(new Service("svc123", "Doctor Consult", new Date(), 1, 30.00));
+        invoice1.setBillingDetails(10, taxRateP1);
 
         int taxRateP2 = (p2.getNationality().equals("Singaporean") || p2.getNationality().equals("Permanent Resident")) ? 0 : 9;
         Invoice invoice2 = new Invoice("INV002", new Date(), p2, "Immediate payment required");
-        invoice2.setBillingDetails(1800, 15, taxRateP2);
+        invoice2.addService(new Service("svc456", "Blood Test", new Date(), 2, 50.00));
+        invoice2.addService(new Service("svc789", "Medication", new Date(), 1, 15.00));
+        invoice2.setBillingDetails(15, taxRateP2);
 
         invoiceList.add(invoice1);
         invoiceList.add(invoice2);
