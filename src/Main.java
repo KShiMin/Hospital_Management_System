@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -40,10 +41,13 @@ public class Main {
         
         csvHandler dh = new csvHandler();
         
-        // Generation of test datas
+        // Test
         // testData(dh);
         // List<Patient> patientList = dh.setPatient();
-
+        // List<Service> servicesList = dh.setService();
+        // servicesList.get(0).setServiceDate(new Date());
+        // servicesList.get(0).setQuantity(1);
+        // servicesList.get(0).displayService();
         // displayAllPatient(patientList);
         // System.out.println("\n");
         // patientList.get(0).displayPatientInfo();

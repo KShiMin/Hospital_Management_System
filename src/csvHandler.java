@@ -8,6 +8,7 @@ import java.util.List;
 public class csvHandler {
     
     private List<Patient> patientData = new ArrayList<>();
+    private List<Service> serviceData = new ArrayList<>();
 
     // Constructor
     public csvHandler(){
@@ -71,6 +72,32 @@ public class csvHandler {
         }
 
         return patientData;
+    }
+
+    public List<Service> setService(){
+        try(BufferedReader br = new BufferedReader(new FileReader("./data/services.csv"))){
+            
+            String line;
+            
+            // Prints out all available data
+            while((line = br.readLine()) != null){
+                String[] sdatas = line.split(",");
+
+                double price;
+                try {
+                    price = Double.parseDouble(sdatas[2]);
+                } catch (NumberFormatException e) {
+                    price = 0.0; // Default value in case of an invalid number
+                }
+
+                serviceData.add(new Service(sdatas[0], sdatas[1], null, 0, price));
+            }
+
+        } catch(IOException e){
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+
+        return serviceData;       
     }
         
 }

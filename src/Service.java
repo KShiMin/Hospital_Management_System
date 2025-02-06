@@ -73,8 +73,8 @@ public class Service {
         System.out.println("Service Description: " + this.serviceDescript);
         System.out.println("Service Date: " + this.serviceDate);
         System.out.println("Service Quantity: " + this.quantity);
-        System.out.println("Service Unit Price: " + this.unitPrice);
-        System.out.println("Service Price: " + calculatePrice());
+        System.out.printf("Service Unit Price: $%,.2f \n", this.unitPrice);
+        System.out.printf("Service Price: $%,.2f \n", calculatePrice());
     }
 
 }
