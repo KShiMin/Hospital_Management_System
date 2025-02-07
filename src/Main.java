@@ -10,6 +10,7 @@ public class Main {
         for (Patient p : pd) {
             System.out.printf("%-12s %-20s %-15s %-21s %-50s%n", p.getId(), p.getName(), p.getPhoneNum(), p.getNationality(), p.getBillAdd());
         }
+    }
 
   
     private static void testData(csvHandler c){
@@ -29,7 +30,6 @@ public class Main {
         patientList.add(p2);
         patientList.add(p3);
         patientList.add(p4);
-
   
         serviceList.add(s1);
         serviceList.add(s2);
@@ -53,7 +53,6 @@ public class Main {
         // displayAllPatient(patientList);
         // System.out.println("\n");
         // patientList.get(0).displayPatientInfo();
-
 
         // Creating invoices for patients
         List<Invoice> invoiceList = new ArrayList<>();
