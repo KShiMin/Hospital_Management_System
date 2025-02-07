@@ -45,17 +45,16 @@ public class Main {
         serviceList.add(s3);
 
         // Creating Payment
-        Payment payment1 = new Payment("Credit Card", "Pending", LocalDate.now(), p1, s1);
-        Payment payment2 = new Payment("Cash", "Paid", LocalDate.now(), p2, s2);
-        Payment payment3 = new Payment("Insurance", "Pending", LocalDate.now(), p3, s3);
+        Payment payment1 = new Payment("Credit Card", "Pending", LocalDate.now());
+        Payment payment2 = new Payment("Cash", "Paid", LocalDate.now());
+        Payment payment3 = new Payment("Insurance", "Pending", LocalDate.now());
 
         // Store Payments in Payment List
         paymentList.add(payment1);
         paymentList.add(payment2);
         paymentList.add(payment3);
 
-        // Save paymentList in file
-        c.saveToFile(patientList, serviceList, paymentList);
+        c.saveToFile(patientList, serviceList);
 
         // Display all payments stored in payment list
         displayPayment(paymentList);
@@ -67,7 +66,7 @@ public class Main {
         csvHandler dh = new csvHandler();
         
         // Test
-        // testData(dh);
+         testData(dh);
         // List<Patient> patientList = dh.setPatient();
         // List<Service> servicesList = dh.setService();
         // servicesList.get(0).setServiceDate(new Date());
