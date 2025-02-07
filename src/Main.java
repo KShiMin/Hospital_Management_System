@@ -1,63 +1,58 @@
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
 
 public class Main {
 
-    // Save patient data to file
-    private static void savePatient(List<Patient> pb) {
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter("./data/patients.csv", "UTF-8");
-            for (Patient p : pb) {
-                String patientStr = String.format("%s,%s,%s,%s,%s", p.getId(), p.getName(), p.getBillAdd(), p.getNationality(), p.getPhoneNum());
-                writer.println(patientStr);
-            }
-        } catch (IOException e) {
-            System.out.println("Error saving patient: " + e.getMessage());
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
+    private static void displayAllPatient(List<Patient> pd) {
+        System.out.printf("%-12s %-20s %-15s %-21s %-50s%n", "Patient ID", "Full Name", "Phone Number", "Nationality", "Billing Address");
+
+        for (Patient p : pd) {
+            System.out.printf("%-12s %-20s %-15s %-21s %-50s%n", p.getId(), p.getName(), p.getPhoneNum(), p.getNationality(), p.getBillAdd());
         }
     }
 
-    // Read patient data from file
-    private static void readPatient() {
-        try (BufferedReader br = new BufferedReader(new FileReader("./data/patients.csv"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] words = line.split(",");
-                for (String w : words) {
-                    System.out.println(w);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("An error occurred: " + e.getMessage());
-        }
-    }
-
-    public static void main(String[] args) {
+  
+    private static void testData(csvHandler c){
         List<Patient> patientList = new ArrayList<>();
-
-        // Creating patient objects
-        Patient p1 = new Patient("P01", "Jack", "Neo", "BLK 19 MARSILING LANE #02-305 Singapore 730019", "Singaporean", "81123456");
-        Patient p2 = new Patient("P02", "May", "Tan", "BLK 213 HOUGANG ST 21 #01-367 Singapore 530213", "Singaporean", "92223546");
-        Patient p3 = new Patient("P03", "Tommy", "Arnold", "34 WHAMPOA WEST #05-15 Singapore 330034", "Permanent Resident", "88833316");
-        Patient p4 = new Patient("P04", "Dennis", "Anderson", "3 COLEMAN STREET #18-22 Singapore 179804", "Foreigner", "97234569");
+        List<Service> serviceList = new ArrayList<>();
+        
+        Patient p1 = new Patient("P01", "Jack", "Neo", "BLK 19 MARSILING LANE #02-305 Singapore 730019", "81123456", "Singaporean");
+        Patient p2 = new Patient("P02", "Mary", "Tan", "BLK 213 HOUGANG ST 21 #01-367 Singapore 530213", "92223546", "Singaporean");
+        Patient p3 = new Patient("P03", "Tommy", "Arnold", "34 WHAMPOA WEST #05-15 Singapore 330034", "88833316", "Permanent Resident");
+        Patient p4 = new Patient("P04", "Dennis", "Anderson", "3 COLEMAN STREET #18-22 Singapore 179804", "97234569", "Foreigner");
+        
+        Service s1 = new Service("svc123", "Doctor Consult", null, 0, 30.00);
+        Service s2 = new Service("svc456", "Blood Test", null, 0, 50.00);
+        Service s3 = new Service("svc789", "Medication", null, 0, 15.00);
 
         patientList.add(p1);
         patientList.add(p2);
         patientList.add(p3);
         patientList.add(p4);
+  
+        serviceList.add(s1);
+        serviceList.add(s2);
+        serviceList.add(s3);
 
-        // Save and read patient data
-        savePatient(patientList);
-        readPatient();
+        c.saveToFile(patientList, serviceList);
+
+    }
+
+    public static void main(String[] args) {
+        
+        csvHandler dh = new csvHandler();
+        
+        // Test
+        // testData(dh);
+        // List<Patient> patientList = dh.setPatient();
+        // List<Service> servicesList = dh.setService();
+        // servicesList.get(0).setServiceDate(new Date());
+        // servicesList.get(0).setQuantity(1);
+        // servicesList.get(0).displayService();
+        // displayAllPatient(patientList);
+        // System.out.println("\n");
+        // patientList.get(0).displayPatientInfo();
 
         // Creating invoices for patients
         List<Invoice> invoiceList = new ArrayList<>();
@@ -79,6 +74,7 @@ public class Main {
         // Display invoices
         for (Invoice invoice : invoiceList) {
             invoice.printInvoice();
-        }
+
+        
     }
 }
