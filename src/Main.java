@@ -54,7 +54,7 @@ public class Main {
         // System.out.println("\n");
         // patientList.get(0).displayPatientInfo();
 
-        // Creating invoices for patients
+        // Creating invoices for patients [need to change]
         List<Invoice> invoiceList = new ArrayList<>();
 
         int taxRateP1 = (p1.getNationality().equals("Singaporean") || p1.getNationality().equals("Permanent Resident")) ? 0 : 9;
