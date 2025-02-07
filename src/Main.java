@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Main {
 
@@ -12,11 +12,20 @@ public class Main {
         }
     }
 
-  
+    private static void displayPayment(List<Payment> pd) {
+        System.out.println("\n==== Payment Details ====");
+        System.out.printf("%-15s %-15s %-15s%n", "Payment Method", "Payment Status", "Payment Due Date");
+
+        for (Payment pm : pd) {
+            System.out.printf("%-15s %-15s %-15s%n", pm.getPaymentMethod(), pm.getPaymentStatus(), pm.getDueDate());
+        }
+    }
+
     private static void testData(csvHandler c){
         List<Patient> patientList = new ArrayList<>();
         List<Service> serviceList = new ArrayList<>();
-        
+        List<Payment> paymentList = new ArrayList<>();
+
         Patient p1 = new Patient("P01", "Jack", "Neo", "BLK 19 MARSILING LANE #02-305 Singapore 730019", "81123456", "Singaporean");
         Patient p2 = new Patient("P02", "Mary", "Tan", "BLK 213 HOUGANG ST 21 #01-367 Singapore 530213", "92223546", "Singaporean");
         Patient p3 = new Patient("P03", "Tommy", "Arnold", "34 WHAMPOA WEST #05-15 Singapore 330034", "88833316", "Permanent Resident");
@@ -30,12 +39,27 @@ public class Main {
         patientList.add(p2);
         patientList.add(p3);
         patientList.add(p4);
-  
+
         serviceList.add(s1);
         serviceList.add(s2);
         serviceList.add(s3);
 
-        c.saveToFile(patientList, serviceList);
+        // Creating Payment
+        Payment payment1 = new Payment("Credit Card", "Pending", LocalDate.now(), p1, s1);
+        Payment payment2 = new Payment("Cash", "Paid", LocalDate.now(), p2, s2);
+        Payment payment3 = new Payment("Insurance", "Pending", LocalDate.now(), p3, s3);
+
+        // Store Payments in Payment List
+        paymentList.add(payment1);
+        paymentList.add(payment2);
+        paymentList.add(payment3);
+
+        // Save paymentList in file
+        c.saveToFile(patientList, serviceList, paymentList);
+
+        // Display all payments stored in payment list
+        displayPayment(paymentList);
+
     }
 
     public static void main(String[] args) {
