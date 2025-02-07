@@ -102,34 +102,30 @@ public class Invoice {
 
     // Print neatly formatted invoice details
     public void printInvoice() {
-        System.out.println("==============================");
-        System.out.println("      Invoice Details     ");
-        System.out.println("==============================");
+        System.out.println("=".repeat(75));
+        System.out.println(" ".repeat(30) +"Invoice Details" +" ".repeat(30));
+        System.out.println("=".repeat(75));
         System.out.printf("Invoice ID: %-20s\n", invoiceId);
-        System.out.printf("Billing Date: %-20s\n", billingDate);
+        System.out.printf("Bill Date: %-20s\n", billingDate);
         System.out.printf("Billing Address: %-20s\n", billingAddress);
         System.out.printf("Additional Notes: %-20s\n", additionalNotes);
-        System.out.println("--------------------------------");
+        System.out.println("-".repeat(75));
         System.out.printf("Patient Name: %-20s\n", patient.getName());
         System.out.printf("Phone Number: %-20s\n", patient.getPhoneNum());
         System.out.printf("Nationality: %-20s\n", patient.getNationality());
-        System.out.println("--------------------------------");
+        System.out.println("-".repeat(75));
         int index = 0;
+        System.out.printf("%-1s %-20s %-35s %s\n", " ", "Service", "Date of Service", "Quality");
         for (Service service : services) {
-            System.out.printf("%d. \n", index+1);
-            System.out.printf("Service Code: %-20s\n", service.getServiceCode());
-            System.out.printf("Service Description: %-20s\n", service.getServiceDescript());
-            System.out.printf("Service Date: %-20s\n", service.getServiceDate());
-            System.out.printf("Quantity: %d\n", service.getQuantity());
-            System.out.printf("Unit Price: %.2f\n", service.getUnitPrice());
+            System.out.printf("%d %-20s %-38s %-20s \n", index+1, service.getServiceDescript(), service.getServiceDate(), service.getQuantity());
             index ++;
         }
-        System.out.println("--------------------------------");
+        System.out.println("-".repeat(75));
         System.out.printf("Total Amount (Before Discounts and Tax): $%.2f\n", calculateTotalAmount());
         System.out.printf("Discount (%d%%): -$%.2f\n", discount, calculateDiscountAmount());
         System.out.printf("Tax (%d%%): +$%.2f\n", taxRate, calculateTaxAmount());
-        System.out.println("--------------------------------");
+        System.out.println("-".repeat(75));
         System.out.printf("Grand Total: $%.2f\n", calculateGrandTotal());
-        System.out.println("==============================");
+        System.out.println("=".repeat(75));
     }
 }
