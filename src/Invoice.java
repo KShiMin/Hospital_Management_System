@@ -79,6 +79,14 @@ public class Invoice {
         this.taxRate = taxRate;
     }
 
+    public int getDiscount() {
+        return discount;
+    }
+
+    public int getTaxRate() {
+        return taxRate;
+    }
+
     // Calculation methods
     public double calculateDiscountAmount() {
         return (totalAmount * discount) / 100.0;
@@ -123,38 +131,5 @@ public class Invoice {
         System.out.println("--------------------------------");
         System.out.printf("Grand Total: $%.2f\n", calculateGrandTotal());
         System.out.println("==============================");
-    }
-
-    // For testing
-    public static void main(String[] args) {
-        List<Invoice> invoiceList = new ArrayList<>();
-
-        Patient patient1 = new Patient("P001", "John", "Doe", "123 Main Street, City, Country", "American", "12345678");
-        Invoice invoice1 = new Invoice("INV12345", new Date(), patient1, "Pay by end of the month.");
-        invoice1.addService(new Service("svc123", "Doctor Consult", new Date(), 1, 30.00));
-        invoice1.setBillingDetails(10, 5);
-
-        Patient patient2 = new Patient("P002", "Jane", "Smith", "456 Elm Street, City, Country", "British", "87654321");
-        Invoice invoice2 = new Invoice("INV12346", new Date(), patient2, "Pay within two weeks.");
-        invoice2.addService(new Service("svc456", "Blood Test", new Date(), 2, 50.00));
-        invoice2.addService(new Service("svc789", "Medication", new Date(), 1, 15.00));
-        invoice2.setBillingDetails(15, 8);
-
-
-        invoiceList.add(invoice1);
-        invoiceList.add(invoice2);
-
-        System.out.println("Invoices after adding:");
-        for (Invoice invoice : invoiceList) {
-            invoice.printInvoice();
-        }
-
-        String idToRemove = "INV12345";
-        invoiceList.removeIf(invoice -> invoice.getInvoiceId().equals(idToRemove));
-
-        System.out.println("Invoices after removal:");
-        for (Invoice invoice : invoiceList) {
-            invoice.printInvoice();
-        }
     }
 }

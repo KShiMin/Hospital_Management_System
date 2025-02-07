@@ -92,12 +92,38 @@ public class csvHandler {
 
                 serviceData.add(new Service(sdatas[0], sdatas[1], null, 0, price));
             }
+            
 
-        } catch(IOException e){
+        } 
+        catch(IOException e){
             System.out.println("An error occurred: " + e.getMessage());
         }
 
         return serviceData;       
+    }
+
+    public void saveInvoicesToFile(List<Invoice> invoices) {
+        String filePath = "./data/invoices.csv";
+    
+        try (PrintWriter writer = new PrintWriter(filePath, "UTF-8")) {
+
+            for (Invoice invoice : invoices) {
+                invoice.calculateTotalAmount();
+                writer.printf("%s,%s,%s,%s,%.2f,%d,%d,%.2f\n",
+                        invoice.getInvoiceId(),
+                        invoice.getBillingDate(),
+                        invoice.getBillingAddress(),
+                        invoice.getPatient().getId(),
+                        invoice.calculateTotalAmount(),
+                        invoice.getDiscount(),
+                        invoice.getTaxRate(),
+                        invoice.calculateGrandTotal()
+                );
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error saving invoices: " + e.getMessage());
+        }
     }
 
 }

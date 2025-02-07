@@ -12,15 +12,12 @@ public class Main {
         }
     }
 
-        
-    private static void testData(csvHandler c){
+    private static List<Patient> testData(csvHandler c) {
         List<Patient> patientList = new ArrayList<>();
         List<Service> serviceList = new ArrayList<>();
         
         Patient p1 = new Patient("P01", "Jack", "Neo", "BLK 19 MARSILING LANE #02-305 Singapore 730019", "81123456", "Singaporean");
         Patient p2 = new Patient("P02", "Mary", "Tan", "BLK 213 HOUGANG ST 21 #01-367 Singapore 530213", "92223546", "Singaporean");
-        Patient p3 = new Patient("P03", "Tommy", "Arnold", "34 WHAMPOA WEST #05-15 Singapore 330034", "88833316", "Permanent Resident");
-        Patient p4 = new Patient("P04", "Dennis", "Anderson", "3 COLEMAN STREET #18-22 Singapore 179804", "97234569", "Foreigner");
         
         Service s1 = new Service("svc123", "Doctor Consult", null, 0, 30.00);
         Service s2 = new Service("svc456", "Blood Test", null, 0, 50.00);
@@ -28,35 +25,27 @@ public class Main {
 
         patientList.add(p1);
         patientList.add(p2);
-        patientList.add(p3);
-        patientList.add(p4);
-  
         serviceList.add(s1);
         serviceList.add(s2);
         serviceList.add(s3);
 
         c.saveToFile(patientList, serviceList);
-
+        
+        return patientList;  // Return the patient list
     }
 
     public static void main(String[] args) {
-        
         csvHandler dh = new csvHandler();
         
-        // Test
-        // testData(dh);
-        // List<Patient> patientList = dh.setPatient();
-        // List<Service> servicesList = dh.setService();
-        // servicesList.get(0).setServiceDate(new Date());
-        // servicesList.get(0).setQuantity(1);
-        // servicesList.get(0).displayService();
-        // displayAllPatient(patientList);
-        // System.out.println("\n");
-        // patientList.get(0).displayPatientInfo();
-
+        // Call testData() and get the patient list
+        List<Patient> patientList = testData(dh);
+        
+        Patient p1 = patientList.get(0);
+        Patient p2 = patientList.get(1);
+        
         // Creating invoices for patients
         List<Invoice> invoiceList = new ArrayList<>();
-
+        
         int taxRateP1 = (p1.getNationality().equals("Singaporean") || p1.getNationality().equals("Permanent Resident")) ? 0 : 9;
         Invoice invoice1 = new Invoice("INV001", new Date(), p1, "Pay by next week");
         invoice1.addService(new Service("svc123", "Doctor Consult", new Date(), 1, 30.00));
@@ -75,5 +64,7 @@ public class Main {
         for (Invoice invoice : invoiceList) {
             invoice.printInvoice(); 
         }
+            
+        dh.saveInvoicesToFile(invoiceList);
     }
 }
