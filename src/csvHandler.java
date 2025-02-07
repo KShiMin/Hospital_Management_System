@@ -108,7 +108,7 @@ public class csvHandler {
         try (PrintWriter writer = new PrintWriter(filePath, "UTF-8")) {
 
             for (Invoice invoice : invoices) {
-                invoice.calculateTotalAmount();
+                // invoice.calculateTotalAmount();
                 writer.printf("%s,%s,%s,%s,%.2f,%d,%d,%.2f\n",
                         invoice.getInvoiceId(),
                         invoice.getBillingDate(),
