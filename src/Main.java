@@ -12,7 +12,7 @@ public class Main {
         }
     }
 
-  
+        
     private static void testData(csvHandler c){
         List<Patient> patientList = new ArrayList<>();
         List<Service> serviceList = new ArrayList<>();
@@ -73,8 +73,7 @@ public class Main {
 
         // Display invoices
         for (Invoice invoice : invoiceList) {
-            invoice.printInvoice();
-
-        
+            invoice.printInvoice(); 
+        }
     }
 }
