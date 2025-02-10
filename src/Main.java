@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.Calendar;
 
 public class Main {
 
@@ -12,6 +14,7 @@ public class Main {
         }
     }
 
+
     private static void displayPayment(List<Payment> pd) {
         System.out.println("\n==== Payment Details ====");
         System.out.printf("%-15s %-15s %-15s%n", "Payment Method", "Payment Status", "Payment Due Date");
@@ -20,8 +23,9 @@ public class Main {
             System.out.printf("%-15s %-15s %-15s%n", pm.getPaymentMethod(), pm.getPaymentStatus(), pm.getDueDate());
         }
     }
-
-    private static void testData(csvHandler c){
+  
+    // Generation of Test Data to be stored in csv file for testing purposed
+    private static void testData(csvHandler c) {
         List<Patient> patientList = new ArrayList<>();
         List<Service> serviceList = new ArrayList<>();
         List<Payment> paymentList = new ArrayList<>();
@@ -30,7 +34,7 @@ public class Main {
         Patient p2 = new Patient("P02", "Mary", "Tan", "BLK 213 HOUGANG ST 21 #01-367 Singapore 530213", "92223546", "Singaporean");
         Patient p3 = new Patient("P03", "Tommy", "Arnold", "34 WHAMPOA WEST #05-15 Singapore 330034", "88833316", "Permanent Resident");
         Patient p4 = new Patient("P04", "Dennis", "Anderson", "3 COLEMAN STREET #18-22 Singapore 179804", "97234569", "Foreigner");
-        
+
         Service s1 = new Service("svc123", "Doctor Consult", null, 0, 30.00);
         Service s2 = new Service("svc456", "Blood Test", null, 0, 50.00);
         Service s3 = new Service("svc789", "Medication", null, 0, 15.00);
@@ -62,20 +66,65 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        
         csvHandler dh = new csvHandler();
         
-        // Test
-         testData(dh);
-        // List<Patient> patientList = dh.setPatient();
-        // List<Service> servicesList = dh.setService();
-        // servicesList.get(0).setServiceDate(new Date());
-        // servicesList.get(0).setQuantity(1);
-        // servicesList.get(0).displayService();
-        // displayAllPatient(patientList);
-        // System.out.println("\n");
-        // patientList.get(0).displayPatientInfo();
+        // Call testData() to generate test data
+        testData(dh);
 
+        // Call setPatient() & setService() to get test data of Patient and Service
+        List<Patient> patientList = dh.setPatient();
+        List<Service> serviceList = dh.setService();
         
+        // Give each patient variable name
+        Patient p1 = patientList.get(0);
+        Patient p2 = patientList.get(3);
+        
+        // Set each service to a variable name
+        Service s1 = serviceList.get(0);
+        Service s2 = serviceList.get(1);
+        Service s3 = serviceList.get(2);
+                                                                                                        
+
+        // Creating invoices for patients
+        List<Invoice> invoiceList = new ArrayList<>();
+        
+        int taxRateP1 = (p1.getNationality().equals("Singaporean") || p1.getNationality().equals("Permanent Resident")) ? 0 : 9;
+        Invoice invoice1 = new Invoice("INV001", new Date(), p1, "Pay by next week");
+
+        s1.setServiceDate(new Date());
+        s1.setQuantity(1);
+        s2.setServiceDate(new Date());
+        s2.setQuantity(2);
+
+        invoice1.addService(s1);
+        invoice1.addService(s2);
+        invoice1.setBillingDetails(10, taxRateP1);
+
+        int taxRateP2 = (p2.getNationality().equals("Singaporean") || p2.getNationality().equals("Permanent Resident")) ? 0 : 9;
+        Invoice invoice2 = new Invoice("INV002", new Date(), p2, "Immediate payment required");
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -2);
+        Date date = cal.getTime();
+
+        s1.setServiceDate(date);
+        s1.setQuantity(1);
+        s3.setServiceDate(date);
+        s3.setQuantity(3);
+        
+        invoice2.addService(s1);
+        invoice2.addService(s3);
+        invoice2.setBillingDetails(15, taxRateP2);
+
+        invoiceList.add(invoice1);
+        invoiceList.add(invoice2);
+
+        // Display invoices
+        for (Invoice invoice : invoiceList) {
+            invoice.printInvoice(); 
+            System.out.println("\n");
+        }
+            
+        dh.saveInvoicesToFile(invoiceList);
     }
 }
