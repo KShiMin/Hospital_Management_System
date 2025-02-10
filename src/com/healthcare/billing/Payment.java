@@ -1,3 +1,4 @@
+package com.healthcare.billing;
 import java.time.LocalDate;
 
 public class Payment {
