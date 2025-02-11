@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.healthcare"},{"l":"com.healthcare.billing"},{"l":"com.healthcare.insurance"},{"l":"com.healthcare.models"}];updateSearchResults();

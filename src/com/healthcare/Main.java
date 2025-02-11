@@ -1,6 +1,4 @@
 package com.healthcare;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.healthcare.billing.Payment;
 import com.healthcare.insurance.Insurance;
@@ -8,6 +6,8 @@ import com.healthcare.models.Invoice;
 import com.healthcare.models.Patient;
 import com.healthcare.models.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 /**
@@ -15,6 +15,13 @@ import java.time.LocalDate;
  * and invoice management within a healthcare system.
  */
 public class Main {
+
+    /**
+     * Default constructor for the Main class.
+     * This class serves as the entry point for the healthcare system.
+     */
+    public Main() {
+    }
 
     /**
      * Calculates the tax rate based on the patient's nationality.

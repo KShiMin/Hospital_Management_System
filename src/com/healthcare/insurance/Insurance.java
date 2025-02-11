@@ -71,10 +71,8 @@ public class Insurance {
     }
 
     /**
-     * Calculates the insurance coverage amount based on the total bill.
-     * 
-     * @param totalBill The total amount billed.
-     * @return The amount covered by the insurance policy.
+     * Submits an insurance claim based on the associated invoice.
+     * It calculates the covered amount and updates the claim status.
      */
     public void submitClaim() {
         try {
