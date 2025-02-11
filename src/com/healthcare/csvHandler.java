@@ -106,7 +106,7 @@ public class csvHandler {
      * @param invoices The list of invoices to be saved to the CSV file.
      */
     public void saveInvoicesToFile(List<Invoice> invoices) {
-        String filePath = "./data/invoices.csv";
+        String filePath = "src/data/invoices.csv";
 
         try (PrintWriter writer = new PrintWriter(filePath, "UTF-8")) {
             writer.println("InvoiceID,BillingDate,BillingAddress,PatientID,TotalAmount,Discount,TaxRate,GrandTotal");
