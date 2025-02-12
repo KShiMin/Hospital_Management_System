@@ -24,8 +24,7 @@ public class csvHandler {
     /**
      * Default constructor for the {@code csvHandler} class.
      */
-    public csvHandler() {
-    }
+    public csvHandler() {}
 
     /**
      * Reads patient data from the CSV file and initializes the patient list.
