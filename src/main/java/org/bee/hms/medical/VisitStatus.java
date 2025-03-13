@@ -10,6 +10,8 @@ package org.bee.hms.medical;
  *     <li>{@link #IN_PROGRESS} - The patient's visit is currently in progress.</li>
  *     <li>{@link #DISCHARGED} - The patient has been discharged.</li>
  *     <li>{@link #CANCELLED} - The visit has been cancelled and will not proceed.</li>
+ *     <li>{@link #SCHEDULED} - The patient's visits has been scheduled.</li>
+ *      <li>{@link #COMPLETED} - The outpatient's visits has been completed.</li>
  * </ul>
  */
 public enum VisitStatus {
@@ -31,5 +33,11 @@ public enum VisitStatus {
     /**
      * The visit has been cancelled and will not proceed.
      */
-    CANCELLED
+    CANCELLED,
+
+    /*
+     * Outpatient Visit Status
+    */
+    SCHEDULED,
+    COMPLETED
 }
