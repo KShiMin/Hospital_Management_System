@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.bee.hms.medical.VisitStatus;
-import org.bee.hms.humans.Doctor;
 
 /**
  * Represents a lab test associated with an outpatient case. A lab test includes details such as
@@ -20,7 +19,7 @@ public class LabTest {
     private int labTestID;
     
     /** The type of lab test. */
-    private LABTYPE type;
+    private LabType type;
     
     /** The date when the lab test was performed or recorded. */
     private Date dateStamp;
@@ -32,7 +31,7 @@ public class LabTest {
     private OutpatientCase outpatientCase;
     
     /** The physician associated with this lab test. */
-    private Doctor physician;
+    private Physician physician;
     
     /** Remarks or comments regarding the lab test. */
     private String remarks;
@@ -56,8 +55,8 @@ public class LabTest {
      * @param remarks remarks or comments regarding the lab test.
      * @param cost the cost of the lab test.
      */
-    public LabTest(LABTYPE type, Date dateStamp, VisitStatus status, OutpatientCase outpatientCase,
-                   Doctor physician, String remarks, Double cost) {
+    public LabTest(LabType type, Date dateStamp, VisitStatus status, OutpatientCase outpatientCase,
+                   Physician physician, String remarks, Double cost) {
         setLabTestID(count++);
         this.type = type;
         this.dateStamp = dateStamp;
@@ -103,7 +102,7 @@ public class LabTest {
      *
      * @return the physician.
      */
-    public Doctor getPhysician() {
+    public Physician getPhysician() {
         return physician;
     }
 
@@ -112,7 +111,7 @@ public class LabTest {
      *
      * @param physician the physician to set.
      */
-    public void setPhysician(Doctor physician) {
+    public void setPhysician(Physician physician) {
         this.physician = physician;
     }
 
@@ -139,7 +138,7 @@ public class LabTest {
      *
      * @return the lab test type.
      */
-    public LABTYPE getType() {
+    public LabType getType() {
         return type;
     }
 
@@ -148,7 +147,7 @@ public class LabTest {
      *
      * @param type the lab test type to set.
      */
-    public void setType(LABTYPE type) {
+    public void setType(LabType type) {
         this.type = type;
     }
 

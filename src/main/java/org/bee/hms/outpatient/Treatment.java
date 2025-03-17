@@ -1,3 +1,5 @@
+package org.bee.hms.outpatient;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +60,7 @@ public class Treatment {
      * @param procedures     a list of procedures associated with the treatment; if null,
      *                       an empty list is initialized.
      */
-    public Treatment(OutpatientCase outpatientCase, String treatmentName, STATUS status,
+    public Treatment(OutpatientCase outpatientCase, String treatmentName, VisitStatus status,
             Date startDate, Date endDate,
             String notes, Double cost, List<Procedure> procedures) {
         setTreatmentID(count++);

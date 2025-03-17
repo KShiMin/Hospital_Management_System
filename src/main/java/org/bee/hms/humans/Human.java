@@ -175,6 +175,22 @@ public abstract class Human {
         return dateOfBirth;
     }
 
+
+    // Setter Functions
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    // Assumption is that conact number is phone number
+    public void setContact(Contact contactNumber) {
+        this.contact = contactNumber;
+    }
+
+
     /**
      * Displays the full details of the person including personal, demographic, residential,
      * and medical information.

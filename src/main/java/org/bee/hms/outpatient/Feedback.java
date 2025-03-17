@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.bee.hms.humans.Patient;
+// Insurance Patient Information
+// import org.bee.hms.humans.Patient;
 
 
 /**

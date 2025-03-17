@@ -14,7 +14,7 @@ public class Main {
      * from a specific category.
      * @param args
      */
-    public static void main(String[] args) {
-        InsuranceClaimTest.main(args);
-    }
+    // public static void main(String[] args) {
+    //     InsuranceClaimTest.main(args);
+    // }
 }

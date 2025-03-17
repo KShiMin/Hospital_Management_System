@@ -3,17 +3,13 @@ package org.bee.hms.outpatient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
-import javax.print.Doc;
-
-import org.bee.hms.billing.Bill;
-import org.bee.hms.humans.DEPARTMENT;
-import org.bee.hms.humans.Doctor;
-import org.bee.hms.humans.Patient;
+import org.bee.hms.humans.Department;
 import org.bee.hms.medical.ConsultationType;
-import org.bee.hms.medical.Medication;
 import org.bee.hms.medical.VisitStatus;
-
+import org.bee.hms.outpatient.LabTest;
+import org.bee.hms.outpatient.Treatment;
 
 /**
  * Represents an outpatient case in a hospital system.
@@ -42,7 +38,7 @@ public class OutpatientCase {
     private VisitStatus status;
 
     /** Department handling the outpatient case. */
-    private DEPARTMENT department;
+    private Department department;
 
     /** Diagnosis given for the outpatient case. */
     private String diagnosis;
@@ -51,10 +47,10 @@ public class OutpatientCase {
     private String visitReason;
 
     /** List of current medications prescribed to the patient. */
-    private ArrayList<Medication> currentMedications;
+    private ArrayList<Drug> currentMedications;
 
     /** List of prescriptions assigned to the patient. */
-    private ArrayList<Medication> prescriptions;
+    private ArrayList<Drug> prescriptions;
 
     /** Follow-up date for the patient. */
     private Date followUpDate;
@@ -66,10 +62,10 @@ public class OutpatientCase {
     private Patient patient;
 
     /** Physician handling the outpatient case. */
-    private Doctor physician;
+    private Physician physician;
 
     /** Billing information for the outpatient case. */
-    private Bill billing;
+    private Billing billing;
 
     /** List of treatments assigned to the patient. */
     private ArrayList<Treatment> treatments;
@@ -149,9 +145,9 @@ public class OutpatientCase {
      * @param labtests           List of lab tests conducted.
      */
     public OutpatientCase(Date appointmentDate, String medicalHistory,
-            CASETYPE type, VisitStatus status, DEPARTMENT department, String diagnosis,
-            String visitReason, ArrayList<Medication> currentMedications, ArrayList<Medication> prescriptions,
-            Date followUpDate, String instructions, Patient patient, Doctor physician, Bill billing,
+            ConsultationType type, VisitStatus status, Department department, String diagnosis,
+            String visitReason, ArrayList<Drug> currentMedications, ArrayList<Drug> prescriptions,
+            Date followUpDate, String instructions, Patient patient, Physician physician, Billing billing,
             ArrayList<Treatment> treatments, ArrayList<LabTest> labtests) {
         setOutpatientCaseID(count++);
         this.appointmentDate = appointmentDate;
@@ -218,7 +214,7 @@ public class OutpatientCase {
      * 
      * @return the assigned Physician
      */
-    public Doctor getPhysician() {
+    public Physician getPhysician() {
         return physician;
     }
 
@@ -227,7 +223,7 @@ public class OutpatientCase {
      * 
      * @param physician the physician to assign
      */
-    public void setPhysician(Doctor physician) {
+    public void setPhysician(Physician physician) {
         this.physician = physician;
     }
 
@@ -236,8 +232,8 @@ public class OutpatientCase {
      * 
      * @return the corresponding Billing object
      */
-    public Bill getBilling() {
-        for (Bill bill : Billing.getAllBillings()) {
+    public Billing getBilling() {
+        for (Billing bill : Billing.getAllBillings()) {
             if (bill.getOutpatientCase().getOutpatientCaseID() == outpatientCaseID) {
                 billing = bill;
             }
@@ -250,7 +246,7 @@ public class OutpatientCase {
      * 
      * @param billing the Billing object to assign
      */
-    public void setBilling(Bill billing) {
+    public void setBilling(Billing billing) {
         this.billing = billing;
     }
 
@@ -313,7 +309,7 @@ public class OutpatientCase {
      * 
      * @return the case type
      */
-    public CASETYPE getType() {
+    public ConsultationType getType() {
         return type;
     }
 
@@ -322,7 +318,7 @@ public class OutpatientCase {
      * 
      * @param type the case type to assign
      */
-    public void setType(CASETYPE type) {
+    public void setType(ConsultationType type) {
         this.type = type;
     }
 
@@ -349,7 +345,7 @@ public class OutpatientCase {
      * 
      * @return the department
      */
-    public DEPARTMENT getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
@@ -358,7 +354,7 @@ public class OutpatientCase {
      * 
      * @param department the department to assign
      */
-    public void setDepartment(DEPARTMENT department) {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 
@@ -403,7 +399,7 @@ public class OutpatientCase {
      *
      * @return a list of current medications
      */
-    public List<Medication> getCurrentMedications() {
+    public List<Drug> getCurrentMedications() {
         return currentMedications;
     }
 
@@ -412,7 +408,7 @@ public class OutpatientCase {
      *
      * @return a list of prescriptions
      */
-    public List<Medication> getPrescriptions() {
+    public List<Drug> getPrescriptions() {
         return prescriptions;
     }
 
@@ -425,7 +421,7 @@ public class OutpatientCase {
     public String getCurrentMedicationsString() {
         String currentMedList = "";
         if (currentMedications != null) {
-            for (Medication med : currentMedications) {
+            for (Drug med : currentMedications) {
                 currentMedList += med;
             }
         } else {
@@ -442,7 +438,7 @@ public class OutpatientCase {
     public String getPrescriptionsString() {
         String prescriptionList = "";
         if (prescriptions != null) {
-            for (Medication prescription : prescriptions) {
+            for (Drug prescription : prescriptions) {
                 prescriptionList += prescription;
             }
         } else {
@@ -455,7 +451,7 @@ public class OutpatientCase {
      * Clears all prescriptions for the patient.
      */
     public void clearAllPrescriptions() {
-        this.prescriptions = new ArrayList<Medication>();
+        this.prescriptions = new ArrayList<Drug>();
     }
 
     /**
@@ -463,7 +459,7 @@ public class OutpatientCase {
      * 
      * @param drug the drug to remove
      */
-    public void removeDrug(Medication drug) {
+    public void removeDrug(Drug drug) {
         currentMedications.remove(drug);
         prescriptions.remove(drug);
     }
@@ -474,8 +470,8 @@ public class OutpatientCase {
      * 
      * @return a list of all drugs
      */
-    public List<Medication> getAllDrugs() {
-        List<Medication> allDrugs = new ArrayList<>();
+    public List<Drug> getAllDrugs() {
+        List<Drug> allDrugs = new ArrayList<>();
         allDrugs.addAll(currentMedications);
         allDrugs.addAll(prescriptions);
         return allDrugs;
@@ -486,7 +482,7 @@ public class OutpatientCase {
      * 
      * @param drug the drug to add
      */
-    public void addDrugToPrescriptions(Medication drug) {
+    public void addDrugToPrescriptions(Drug drug) {
         this.prescriptions.add(drug);
     }
 
@@ -663,7 +659,7 @@ public class OutpatientCase {
      * @param physician The physician whose cases are to be retrieved.
      * @return A list of outpatient cases associated with the given physician.
      */
-    public static List<OutpatientCase> getAllCasesByPhysician(Doctor physician) {
+    public static List<OutpatientCase> getAllCasesByPhysician(Physician physician) {
         List<OutpatientCase> allOutpatientCases = new ArrayList<>();
         for (OutpatientCase i : instances) {
             if (i.getPhysician().equals(physician)) {
@@ -672,4 +668,166 @@ public class OutpatientCase {
         }
         return allOutpatientCases;
     }
+
+    /**
+     * Prints the details of an outpatient case
+     *
+     * @param outpatientCase The outpatient case in which the details will be
+     *                       printed out like ID, Appointment Date etc.
+     * 
+     */
+    public static void printOutpatientCaseDetails(OutpatientCase outpatientCase) {
+        if (outpatientCase == null) {
+            System.out.println("Outpatient case not found.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Outpatient Case Details:\n");
+        System.out.println("----------------------------------------------------------------------------\n\n");
+
+        sb.append(String.format("Outpatient Case ID:   %s\n", outpatientCase.getOutpatientCaseID()));
+        sb.append(String.format("Appointment Date:     %s\n", outpatientCase.getAppointmentDate()));
+        sb.append(String.format("Medical History:      %s\n", outpatientCase.getMedicalHistory()));
+        sb.append(String.format("Type:                 %s\n", outpatientCase.getType()));
+        sb.append(String.format("Status:               %s\n", outpatientCase.getStatus()));
+        sb.append(String.format("Department:           %s\n", outpatientCase.getDepartment()));
+        sb.append(String.format("Diagnosis:            %s\n", outpatientCase.getDiagnosis()));
+        sb.append(String.format("Visit Reason:         %s\n\n", outpatientCase.getVisitReason()));
+
+        // Current Medications
+        sb.append("Current Medications:\n\n");
+        if (outpatientCase.getCurrentMedications().isEmpty()) {
+            sb.append("    None\n\n");
+        } else {
+            for (Drug med : outpatientCase.getCurrentMedications()) {
+                sb.append("    Drug Details:\n");
+                sb.append(String.format("              ID:             %s\n", med.getDrugID()));
+                sb.append(String.format("              Name:           %s\n", med.getDrugName()));
+                sb.append(String.format("              Dosage:         %s\n", med.getDosage()));
+                sb.append(String.format("              Expiry Date:    %s\n", med.getExpiryDate()));
+                sb.append(String.format("              Cost Per Unit:  %.2f\n\n", med.getCostPerUnit()));
+            }
+        }
+
+        // Prescriptions
+        sb.append("Prescriptions:\n\n");
+        if (outpatientCase.getPrescriptions().isEmpty()) {
+            sb.append("    None\n\n");
+        } else {
+            // sb.append(outpatientCase.getPrescriptions());
+            for (Drug prescription : outpatientCase.getPrescriptions()) {
+                if (prescription != null) {
+                    sb.append("    Drug Details:\n");
+                    sb.append(String.format("              ID:             %s\n", prescription.getDrugID()));
+                    sb.append(String.format("              Name:           %s\n", prescription.getDrugName()));
+                    sb.append(String.format("              Dosage:         %s\n", prescription.getDosage()));
+                    sb.append(String.format("              Expiry Date:    %s\n", prescription.getExpiryDate()));
+                    sb.append(String.format("              Cost Per Unit:  %.2f\n\n", prescription.getCostPerUnit()));
+                }
+            }
+        }
+
+        sb.append(String.format("Follow-Up Date:       %s\n", outpatientCase.getFollowUpDate()));
+        sb.append(String.format("Instructions:         %s\n", outpatientCase.getInstructions()));
+        sb.append(String.format("Physician ID:         %s\n",
+                outpatientCase.getPhysician() != null ? outpatientCase.getPhysician().getPhysicianID() : "N/A"));
+        sb.append(String.format("Billing ID:           %s\n\n",
+                outpatientCase.getBilling() != null ? outpatientCase.getBilling().getBillingID() : "null"));
+
+        // Treatments
+        sb.append("Treatments:\n");
+        if (outpatientCase.getTreatments().isEmpty()) {
+            sb.append("    None\n\n");
+        } else {
+            for (Treatment treatment : outpatientCase.getTreatments()) {
+                sb.append("    Treatment Details:\n");
+                sb.append(String.format("              ID:          %s\n", treatment.getTreatmentID()));
+                sb.append(String.format("              Name:        %s\n", treatment.getTreatmentName()));
+                sb.append(String.format("              Status:      %s\n", treatment.getStatus()));
+                sb.append(String.format("              Start Date:  %s\n", treatment.getStartDate()));
+                sb.append(String.format("              End Date:    %s\n", treatment.getEndDate()));
+                sb.append("              Notes:\n");
+                sb.append(String.format("              Cost:        %.2f\n\n", treatment.getCost()));
+            }
+        }
+
+        // Lab Tests (Formatted same as treatments)
+        sb.append("Lab Tests:\n");
+        if (outpatientCase.getLabtests().isEmpty()) {
+            sb.append("    None\n");
+        } else {
+            for (LabTest test : outpatientCase.getLabtests()) {
+                sb.append("    Lab Test Details:\n");
+                sb.append(String.format("              ID:          %s\n", test.getLabTestID()));
+                sb.append(String.format("              Type:        %s\n", test.getType()));
+                sb.append(String.format("              Status:      %s\n", test.getStatus()));
+                sb.append(String.format("              Date:        %s\n", test.getDateStamp()));
+                sb.append(String.format("              Cost:        %.2f\n\n", test.getCost()));
+            }
+        }
+
+        System.out.println(sb);
+    }
+
+    /**
+     * Updates the outpatient case object.
+     * This method allows the physician to update the outpatient case for a patient
+     *
+     * @param outpatientCase The outpatientCase object to be updated.
+     * @param scanner        The {@link Scanner} object used for input.
+     * 
+     */
+    public static void updateOutpatientCaseDetails(OutpatientCase outpatientCase, Scanner scanner) {
+        if (outpatientCase == null) {
+            System.out.println("Invalid outpatient case.");
+            return;
+        }
+
+        System.out.println("Updating details for Outpatient Case ID: " + outpatientCase.getOutpatientCaseID());
+
+        System.out.println("Enter new medical history (or press Enter to keep current ["
+                + outpatientCase.getMedicalHistory() + "]): ");
+        String medicalHistory = scanner.nextLine();
+        if (!medicalHistory.isEmpty()) {
+            outpatientCase.setMedicalHistory(medicalHistory);
+        }
+
+        System.out.print(
+                "\nEnter new diagnosis (or press Enter to keep current [" + outpatientCase.getDiagnosis() + "]): ");
+        String diagnosis = scanner.nextLine();
+        if (!diagnosis.isEmpty()) {
+            outpatientCase.setDiagnosis(diagnosis);
+        }
+
+        System.out.print("\nEnter new visit reason (or press Enter to keep current [" + outpatientCase.getVisitReason()
+                + "]): ");
+        String visitReason = scanner.nextLine();
+        if (!visitReason.isEmpty()) {
+            outpatientCase.setVisitReason(visitReason);
+        }
+
+        System.out.print("\nEnter new instructions (or press Enter to keep current [" + outpatientCase.getInstructions()
+                + "]): ");
+        String instructions = scanner.nextLine();
+        if (!instructions.isEmpty()) {
+            outpatientCase.setInstructions(instructions);
+        }
+
+        System.out.print("Select new status:\n");
+        VisitStatus[] statuses = VisitStatus.values();
+        for (int i = 0; i < statuses.length; i++) {
+            System.out.println((i + 1) + " - " + statuses[i]);
+        }
+        System.out.print("\nEnter status number (or 0 to keep current [" + outpatientCase.getStatus() + "]): ");
+        int statusChoice = scanner.nextInt();
+        scanner.nextLine();
+        if (statusChoice > 0 && statusChoice <= statuses.length) {
+            outpatientCase.setStatus(statuses[statusChoice - 1]);
+        }
+
+        System.out.println("Outpatient case updated successfully.");
+    }
+
 }

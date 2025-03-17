@@ -5,86 +5,143 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import org.bee.hms.humans.DEPARTMENT;
-import org.bee.hms.humans.Doctor;
-import org.bee.hms.humans.Patient;
-import org.bee.hms.medical.Medication;
+import org.bee.hms.humans.Department;
+import org.bee.hms.medical.ConsultationType;
 import org.bee.hms.medical.VisitStatus;
-import org.bee.hms.billing.*;
+import org.bee.hms.outpatient.OutpatientCase;
+import org.bee.hms.outpatient.Treatment;
+import org.bee.hms.utils.OpUtils;
 
-public class OutpatientCRUD {
-    static List<Patient> all_patients = new ArrayList<>();
-    static List<Doctor> all_physicians = new ArrayList<>();
-    static List<Feedback> all_feedbacks = new ArrayList<>();
-    static List<Medication> all_drugs = new ArrayList<>();
-    static List<LabTest> all_labtests = new ArrayList<>();
-    static List<Bill> all_billings = new ArrayList<>();
-    static List<Treatment> all_treatments = new ArrayList<>();
+public class ClerkPortal {
+    
     static List<OutpatientCase> all_outpatientcases = new ArrayList<>();
-    static List<Procedure> all_procedures = new ArrayList<>();
 
-    /**
-     * Creates a new feedback for the patient.
-     *
-     * @param patient The patient that creates the new feedback.
-     * @param scan    The {@link Scanner} object used for input.
-     * 
-     */
-    private static void addFeedback(Patient patient, Scanner scan) {
-        System.out.print("Rate Medical Care (1-5): ");
-        int medicalCareRating = scan.nextInt();
-        System.out.print("Rate Service (1-5): ");
-        int serviceRating = scan.nextInt();
-        scan.nextLine();
-        System.out.print("Enter Remarks: ");
-        String remarks = scan.nextLine();
-
-        Feedback feedback = new Feedback(patient, medicalCareRating, serviceRating, new Date(), remarks);
-
-        System.out.println("Feedback submitted successfully!");
-        all_feedbacks.add(feedback);
-    }
-
-    /**
-     * Prints all feedback records for a given patient.
-     * This method retrieves and displays a list of feedback associated with the
-     * specified patient.
-     * If no feedback records are found, a message is displayed indicating that no
-     * records exist.
-     * 
-     * @param patient The {@link Patient} whose feedback records are to be
-     *                displayed.
-     */
-    public static void printAllFeedBack(Patient patient) {
-        System.out.println(
-                "\n------------------------------------------------------------------------------------------------------------------------------");
-        System.out.println("\t\t\t\t\t\tList of All Feedbacks");
-        System.out.println(
-                "------------------------------------------------------------------------------------------------------------------------------");
-
-        List<Feedback> feedbackList = Feedback.getAllFeedbacksByPatient(patient);
-        if (feedbackList.isEmpty()) {
-            System.out.println("No feedback records found.");
-        } else {
-            System.out.printf("%-12s | %-12s | %-20s | %-20s | %-30s | %-40s\n",
-                    "Feedback ID", "Patient ID", "Medical Care Rating", "Service Rating", "Date",
-                    "Remarks");
+    public static void showClerkMenu(Scanner scan){
+        String outpatientCaseID = "";
+        boolean clerkMenu = true;
+        while (clerkMenu) {
             System.out.println(
-                    "------------------------------------------------------------------------------------------------------------------------------");
+                    "\n----------------------------------------------------------------------------");
+            System.out.println("\tWelcome to Clinic Clerk's Portal");
+            System.out.println(
+                    "----------------------------------------------------------------------------");
+            System.out.println("Following Functionalities are available: \n");
 
-            for (Feedback feedback : feedbackList) {
-                System.out.printf("%-12s | %-12s | %-20d | %-20d | %-30s | %-40s\n",
-                        feedback.getFeedbackID(),
-                        feedback.getPatient().getPatientID(),
-                        feedback.getMedicalCareRating(),
-                        feedback.getServiceRating(),
-                        feedback.getDateStamp(),
-                        feedback.getRemarks());
+            System.out.println("1- View all Outpatient Cases");
+            System.out.println("2- Update Field for Outpatient Case");
+            System.out.println("3- Create new Outpatient Case");
+            System.out.println("4- Create New Drug");
+            System.out.println("5- View Billing for Outpatient Case");
+            System.out.println("6- Update Bill Payment Status for Outpatient Case");
+            System.out.println("7- Create New Patient");
+            System.out.println("8- Create New Physician");
+            System.out.println("9- Return to previous");
+            System.out.println("10- Exit");
+
+            System.out.println(
+                    "----------------------------------------------------------------------------");
+            int clerkMenu_input = OpUtils.optionsInput(scan, 0, 11);
+            if (clerkMenu_input == 10) {
+                OpUtils.printExit();
+                clerkMenu = true;
+                break;
+            }
+            switch (clerkMenu_input) {
+                case 1:
+                    viewAllOutpatientCasesClerk();
+                    break;
+                case 2:
+                    System.out.println("Enter the Outpatient Case ID to update: ");
+                    outpatientCaseID = scan.nextLine();
+                    OutpatientCase outpatientCase = OutpatientCase
+                            .searchOutpatientCaseByID(Integer.valueOf(outpatientCaseID));
+                    updateOutpatientCaseStatus(outpatientCase, scan);
+                    break;
+                case 3:
+                    createOutpatientCase(scan);
+                    // updateDataset();
+                    break;
+                case 4:
+                    createNewDrug(scan);
+                    // updateDataset();
+                    break;
+                case 5:
+                    System.out.println("Enter the Outpatient Case ID for the Bill: ");
+                    // outpatientCaseID = scan.nextLine();
+                    // viewBillingByOutpatientCase(Integer.valueOf(outpatientCaseID), scan);
+                    break;
+                case 6:
+                    System.out.println("Enter the Outpatient Case ID for the Bill to update: ");
+                    // outpatientCaseID = scan.nextLine();
+                    // updateBillStatus(Integer.valueOf(outpatientCaseID), scan);
+                    break;
+                case 7:
+                    PatientPortal.createNewPatient(scan);
+                    // updateDataset();
+                    break;
+                case 8:
+                    PhysicianPortal.createNewPhysician(scan);
+                    // updateDataset();
+                    break;
+                case 9:
+                    // clearScreen();
+                    clerkMenu = false;
+                    break;
             }
         }
     }
     
-    
+    /**
+     * Creates a new drug object.
+     * This method allows the clerk to add a new drug into the inventory for
+     * physicians to add to patient's medications.
+     * 
+     * @param scanner The {@link Scanner} object used for input.
+     * 
+     */
+    public static void createNewDrug(Scanner scanner) {
+        boolean addMore = true;
+
+        while (addMore) {
+            System.out.print("Enter the Drug Name: ");
+            String drugName = scanner.nextLine();
+
+            System.out.print("Enter the Dosage: ");
+            String dosage = scanner.nextLine();
+
+            Date expiryDate = null;
+            while (true) {
+                System.out.print("Enter the Expiry Date (dd-MM-yyyy): ");
+                String expiryDateInput = scanner.nextLine().trim();
+
+                expiryDate = OpUtils.customDate(expiryDateInput);
+
+                if (expiryDate != null) {
+                    break;
+                } else {
+                    System.out.println("Invalid date format! Please enter in dd-MM-yyyy format.");
+                }
+            }
+
+            System.out.print("Enter the Cost Per Unit: ");
+            double costPerUnit = Double.parseDouble(scanner.nextLine());
+
+            // Create and add the drug to the list
+            Drug newDrug = new Drug(drugName, dosage, expiryDate, costPerUnit);
+            // all_drugs.add(newDrug);
+
+            System.out.println("New Drug created and added successfully!");
+            System.out.println(newDrug); // Display the newly added drug
+
+            // Ask if the user wants to add more drugs
+            System.out.print("Would you like to add another drug? (yes/no): ");
+            String response = scanner.nextLine().trim().toLowerCase();
+            addMore = response.equals("yes");
+        }
+    }
+
+    // ===============clerk functs=================
+
     /**
      * Creates a outpatient case object.
      * This method allows the clerk to create a new outpatient case.
@@ -106,7 +163,7 @@ public class OutpatientCRUD {
         // Retrieve Physician by ID
         System.out.print("Enter Physician ID: ");
         String physicianID = scan.nextLine();
-        Doctor physician = Physician.searchPhysicianByID(Integer.valueOf(physicianID));
+        Physician physician = Physician.searchPhysicianByID(Integer.valueOf(physicianID));
 
         if (physician == null) {
             System.out.println("Physician not found. Returning to main menu.");
@@ -115,11 +172,11 @@ public class OutpatientCRUD {
 
         // Select Case Type
         System.out.println("Select Case Type:");
-        for (CASETYPE type : CASETYPE.values()) {
+        for (ConsultationType type : ConsultationType.values()) {
             System.out.println((type.ordinal() + 1) + " - " + type);
         }
         System.out.print("Enter case type number: ");
-        CASETYPE caseType = CASETYPE.values()[scan.nextInt() - 1];
+        ConsultationType caseType = ConsultationType.values()[scan.nextInt() - 1];
         scan.nextLine();
 
         // Select Status
@@ -137,7 +194,7 @@ public class OutpatientCRUD {
             System.out.println("Enter Appointment Date (dd-MM-yyyy): ");
             String input = scan.nextLine().trim();
 
-            appointmentDate = customDate(input);
+            appointmentDate = OpUtils.customDate(input);
 
             if (appointmentDate != null) {
                 break; // Valid date, exit loop
@@ -161,11 +218,11 @@ public class OutpatientCRUD {
 
         // Select Department
         System.out.println("Select Department:");
-        for (DEPARTMENT dept : DEPARTMENT.values()) {
+        for (Department dept : Department.values()) {
             System.out.println((dept.ordinal() + 1) + " - " + dept);
         }
         System.out.print("Enter department number: ");
-        DEPARTMENT department = DEPARTMENT.values()[scan.nextInt() - 1];
+        Department department = Department.values()[scan.nextInt() - 1];
         scan.nextLine();
 
         // Follow-Up Date
@@ -178,7 +235,7 @@ public class OutpatientCRUD {
                 break;
             }
 
-            followUpDate = customDate(input);
+            followUpDate = OpUtils.customDate(input);
 
             if (followUpDate != null) {
                 break;
@@ -207,7 +264,7 @@ public class OutpatientCRUD {
             System.out.println(
                     "------------------------------------------------------------------------------------------------------------");
             System.out.println("Current Drug List");
-            for (Medication drug : Medication.getAllDrugs()) {
+            for (Drug drug : Drug.getAllDrugs()) {
                 if (drug != null) {
                     System.out.printf("%-15s | %-20s | %-12s | %-10s | %-12.2f \n",
                             drug.getDrugID(),
@@ -229,7 +286,7 @@ public class OutpatientCRUD {
                     String[] drugIDs = reply.split(",");
 
                     for (String id : drugIDs) {
-                        Medication drug = Medication.searchDrugByID(Integer.parseInt(id.trim()));
+                        Drug drug = Drug.searchDrugByID(Integer.parseInt(id.trim()));
                         if (!newCase.getPrescriptions().contains(drug)) {
                             newCase.getPrescriptions().add(drug);
                         }
@@ -243,7 +300,6 @@ public class OutpatientCRUD {
         System.out.println("\nOutpatient case created successfully!");
     }
 
-    
     /**
      * Prints all outpatient case for the clerk to view
      * 
@@ -275,66 +331,7 @@ public class OutpatientCRUD {
                     oc.getBilling() != null ? oc.getBilling().getFinalCost() : 0.0);
         }
     }
-
-    /**
-     * Updates the outpatient case object.
-     * This method allows the physician to update the outpatient case for a patient
-     *
-     * @param outpatientCase The outpatientCase object to be updated.
-     * @param scanner        The {@link Scanner} object used for input.
-     * 
-     */
-    public static void updateOutpatientCaseDetails(OutpatientCase outpatientCase, Scanner scanner) {
-        if (outpatientCase == null) {
-            System.out.println("Invalid outpatient case.");
-            return;
-        }
-
-        System.out.println("Updating details for Outpatient Case ID: " + outpatientCase.getOutpatientCaseID());
-
-        System.out.println("Enter new medical history (or press Enter to keep current ["
-                + outpatientCase.getMedicalHistory() + "]): ");
-        String medicalHistory = scanner.nextLine();
-        if (!medicalHistory.isEmpty()) {
-            outpatientCase.setMedicalHistory(medicalHistory);
-        }
-
-        System.out.print(
-                "\nEnter new diagnosis (or press Enter to keep current [" + outpatientCase.getDiagnosis() + "]): ");
-        String diagnosis = scanner.nextLine();
-        if (!diagnosis.isEmpty()) {
-            outpatientCase.setDiagnosis(diagnosis);
-        }
-
-        System.out.print("\nEnter new visit reason (or press Enter to keep current [" + outpatientCase.getVisitReason()
-                + "]): ");
-        String visitReason = scanner.nextLine();
-        if (!visitReason.isEmpty()) {
-            outpatientCase.setVisitReason(visitReason);
-        }
-
-        System.out.print("\nEnter new instructions (or press Enter to keep current [" + outpatientCase.getInstructions()
-                + "]): ");
-        String instructions = scanner.nextLine();
-        if (!instructions.isEmpty()) {
-            outpatientCase.setInstructions(instructions);
-        }
-
-        System.out.print("Select new status:\n");
-        VisitStatus[] statuses = VisitStatus.values();
-        for (int i = 0; i < statuses.length; i++) {
-            System.out.println((i + 1) + " - " + statuses[i]);
-        }
-        System.out.print("\nEnter status number (or 0 to keep current [" + outpatientCase.getStatus() + "]): ");
-        int statusChoice = scanner.nextInt();
-        scanner.nextLine();
-        if (statusChoice > 0 && statusChoice <= statuses.length) {
-            outpatientCase.setStatus(statuses[statusChoice - 1]);
-        }
-
-        System.out.println("Outpatient case updated successfully.");
-    }
-
+    
     /**
      * Updates the status/details of outpatient case object.
      * This method allows the clerk to update the status of an outpatient case e.g
@@ -354,7 +351,7 @@ public class OutpatientCRUD {
 
         // Case Type
         System.out.print("Enter new Case Type (or press Enter to keep current): ");
-        for (CASETYPE type : CASETYPE.values()) {
+        for (ConsultationType type : ConsultationType.values()) {
             System.out.println((type.ordinal() + 1) + " - " + type);
         }
         System.out.print("Enter case type number: ");
@@ -365,8 +362,8 @@ public class OutpatientCRUD {
         if (!casetype.isEmpty()) {
             try {
                 int caseTypeIndex = Integer.parseInt(casetype) - 1;
-                if (caseTypeIndex >= 0 && caseTypeIndex < CASETYPE.values().length) {
-                    CASETYPE caseType = CASETYPE.values()[caseTypeIndex];
+                if (caseTypeIndex >= 0 && caseTypeIndex < ConsultationType.values().length) {
+                    ConsultationType caseType = ConsultationType.values()[caseTypeIndex];
                     outpatientCase.setType(caseType);
                 } else {
                     System.out.println("Invalid selection. Keeping current case type.");
@@ -410,7 +407,7 @@ public class OutpatientCRUD {
         String dateInput = scanner.nextLine().trim();
 
         if (!dateInput.isEmpty()) {
-            Date newDate = customDate(dateInput);
+            Date newDate = OpUtils.customDate(dateInput);
             if (newDate != null) {
                 outpatientCase.setAppointmentDate(newDate);
             } else {
@@ -425,7 +422,7 @@ public class OutpatientCRUD {
         String followUp = scanner.nextLine().trim();
 
         if (!followUp.isEmpty()) {
-            Date newFollowUpDate = customDate(followUp);
+            Date newFollowUpDate = OpUtils.customDate(followUp);
             if (newFollowUpDate != null) {
                 outpatientCase.setFollowUpDate(newFollowUpDate);
             } else {
@@ -462,7 +459,7 @@ public class OutpatientCRUD {
                 System.out.print("Enter the Start Date (dd-MM-yyyy) (or press Enter to keep current): ");
                 String startDateInput = scanner.nextLine().trim();
                 if (!startDateInput.isEmpty()) {
-                    Date newStartDate = customDate(startDateInput);
+                    Date newStartDate = OpUtils.customDate(startDateInput);
                     if (newStartDate != null) {
                         treatment.setStartDate(newStartDate);
                         System.out.println("Start date updated successfully!");
@@ -477,7 +474,7 @@ public class OutpatientCRUD {
                 System.out.print("Enter the End Date (dd-MM-yyyy) (or press Enter to keep current): ");
                 String endDateInput = scanner.nextLine().trim();
                 if (!endDateInput.isEmpty()) {
-                    Date newEndDate = customDate(endDateInput);
+                    Date newEndDate = OpUtils.customDate(endDateInput);
                     if (newEndDate != null) {
                         treatment.setEndDate(newEndDate);
                         System.out.println("End date updated successfully!");
@@ -514,107 +511,4 @@ public class OutpatientCRUD {
             System.out.println("Keeping current treatment.");
         }
     }
-
-        /**
-     * Prints the details of an outpatient case
-     *
-     * @param outpatientCase The outpatient case in which the details will be
-     *                       printed out like ID, Appointment Date etc.
-     * 
-     */
-    public static void printOutpatientCaseDetails(OutpatientCase outpatientCase) {
-        if (outpatientCase == null) {
-            System.out.println("Outpatient case not found.");
-            return;
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Outpatient Case Details:\n");
-        System.out.println("----------------------------------------------------------------------------\n\n");
-
-        sb.append(String.format("Outpatient Case ID:   %s\n", outpatientCase.getOutpatientCaseID()));
-        sb.append(String.format("Appointment Date:     %s\n", outpatientCase.getAppointmentDate()));
-        sb.append(String.format("Medical History:      %s\n", outpatientCase.getMedicalHistory()));
-        sb.append(String.format("Type:                 %s\n", outpatientCase.getType()));
-        sb.append(String.format("Status:               %s\n", outpatientCase.getStatus()));
-        sb.append(String.format("Department:           %s\n", outpatientCase.getDepartment()));
-        sb.append(String.format("Diagnosis:            %s\n", outpatientCase.getDiagnosis()));
-        sb.append(String.format("Visit Reason:         %s\n\n", outpatientCase.getVisitReason()));
-
-        // Current Medications
-        sb.append("Current Medications:\n\n");
-        if (outpatientCase.getCurrentMedications().isEmpty()) {
-            sb.append("    None\n\n");
-        } else {
-            for (Medication med : outpatientCase.getCurrentMedications()) {
-                sb.append("    Drug Details:\n");
-                sb.append(String.format("              ID:             %s\n", med.getDrugID()));
-                sb.append(String.format("              Name:           %s\n", med.getDrugName()));
-                sb.append(String.format("              Dosage:         %s\n", med.getDosage()));
-                sb.append(String.format("              Expiry Date:    %s\n", med.getExpiryDate()));
-                sb.append(String.format("              Cost Per Unit:  %.2f\n\n", med.getCostPerUnit()));
-            }
-        }
-
-        // Prescriptions
-        sb.append("Prescriptions:\n\n");
-        if (outpatientCase.getPrescriptions().isEmpty()) {
-            sb.append("    None\n\n");
-        } else {
-            // sb.append(outpatientCase.getPrescriptions());
-            for (Medication prescription : outpatientCase.getPrescriptions()) {
-                if (prescription != null) {
-                    sb.append("    Drug Details:\n");
-                    sb.append(String.format("              ID:             %s\n", prescription.getDrugID()));
-                    sb.append(String.format("              Name:           %s\n", prescription.getDrugName()));
-                    sb.append(String.format("              Dosage:         %s\n", prescription.getDosage()));
-                    sb.append(String.format("              Expiry Date:    %s\n", prescription.getExpiryDate()));
-                    sb.append(String.format("              Cost Per Unit:  %.2f\n\n", prescription.getCostPerUnit()));
-                }
-            }
-        }
-
-        sb.append(String.format("Follow-Up Date:       %s\n", outpatientCase.getFollowUpDate()));
-        sb.append(String.format("Instructions:         %s\n", outpatientCase.getInstructions()));
-        sb.append(String.format("Physician ID:         %s\n",
-                outpatientCase.getPhysician() != null ? outpatientCase.getPhysician().getPhysicianID() : "N/A"));
-        sb.append(String.format("Billing ID:           %s\n\n",
-                outpatientCase.getBilling() != null ? outpatientCase.getBilling().getBillingID() : "null"));
-
-        // Treatments
-        sb.append("Treatments:\n");
-        if (outpatientCase.getTreatments().isEmpty()) {
-            sb.append("    None\n\n");
-        } else {
-            for (Treatment treatment : outpatientCase.getTreatments()) {
-                sb.append("    Treatment Details:\n");
-                sb.append(String.format("              ID:          %s\n", treatment.getTreatmentID()));
-                sb.append(String.format("              Name:        %s\n", treatment.getTreatmentName()));
-                sb.append(String.format("              Status:      %s\n", treatment.getStatus()));
-                sb.append(String.format("              Start Date:  %s\n", treatment.getStartDate()));
-                sb.append(String.format("              End Date:    %s\n", treatment.getEndDate()));
-                sb.append("              Notes:\n");
-                sb.append(String.format("              Cost:        %.2f\n\n", treatment.getCost()));
-            }
-        }
-
-        // Lab Tests (Formatted same as treatments)
-        sb.append("Lab Tests:\n");
-        if (outpatientCase.getLabtests().isEmpty()) {
-            sb.append("    None\n");
-        } else {
-            for (LabTest test : outpatientCase.getLabtests()) {
-                sb.append("    Lab Test Details:\n");
-                sb.append(String.format("              ID:          %s\n", test.getLabTestID()));
-                sb.append(String.format("              Type:        %s\n", test.getType()));
-                sb.append(String.format("              Status:      %s\n", test.getStatus()));
-                sb.append(String.format("              Date:        %s\n", test.getDateStamp()));
-                sb.append(String.format("              Cost:        %.2f\n\n", test.getCost()));
-            }
-        }
-
-        System.out.println(sb);
-    }
-
 }

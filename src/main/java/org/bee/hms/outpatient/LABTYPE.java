@@ -3,7 +3,7 @@ package org.bee.hms.outpatient;
 /**
  * Enums for lab test types
  */
-public enum LABTYPE {
+public enum LabType {
     BLOOD,
     URINE,
     STOOL,

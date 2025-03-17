@@ -3,7 +3,7 @@ package org.bee.hms.humans;
 /**
  * Enums for type of departments
  */
-public enum DEPARTMENT {
+public enum Department {
     INTERNAL_MEDICINE,
     SURGERY,
     PEDIATRICS,

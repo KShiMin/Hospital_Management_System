@@ -23,5 +23,8 @@ public enum ConsultationType {
     SPECIALIZED_CONSULTATION,
 
     /*** A consultation that takes place after initial treatment or diagnosis.*/
-    FOLLOW_UP
+    FOLLOW_UP,
+
+    /*** A routine checkup for patients who are not undergoing a consultation.*/
+    ROUTINE_CHECKUP
 }
