@@ -23,7 +23,7 @@ import javax.print.Doc;
 public class HumanController {
 
     private static final String DATABASE_DIR = System.getProperty("database.dir", "database");
-    private static final String HUMANS_FILE = DATABASE_DIR + "/humans.json";
+    private static final String HUMANS_FILE = DATABASE_DIR + "/humans.txt";
 
     private static HumanController instance;
 
@@ -77,6 +77,15 @@ public class HumanController {
             case Doctor doc -> String.format("Welcome back %s MCR No. %s", doc.getName(), doc.getMcr());
             case Patient patient -> String.format("Welcome back %s (%s)", patient.getName(), patient.getPatientId());
             case Nurse nurse -> String.format("Welcome back %s RNID No. %s", nurse.getName(), nurse.getRnid());
+            case null, default -> throw new IllegalStateException("There is no logged in user");
+        };
+    }
+
+    public String getLoginInUser(){
+        return switch (authenticatedUser) {
+            case Doctor doc -> String.format(doc.getName(), doc.getMcr());
+            case Patient patient -> String.format(patient.getName(), patient.getPatientId());
+            case Nurse nurse -> String.format(nurse.getName(), nurse.getRnid());
             case null, default -> throw new IllegalStateException("There is no logged in user");
         };
     }
