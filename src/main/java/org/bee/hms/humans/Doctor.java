@@ -1,5 +1,9 @@
 package org.bee.hms.humans;
 
+import org.bee.hms.outpatient.OutpatientCase;
+
+import java.util.ArrayList;
+
 /**
  * Represents a doctor in the insurance system.
  * <p>
@@ -12,6 +16,8 @@ public class Doctor extends Staff {
      * The Medical Council Registration (MCR) number of the doctor.
      */
     private final String mcr;
+    private ArrayList<OutpatientCase> patientCases;
+
 
 
     /**
@@ -49,6 +55,18 @@ public class Doctor extends Staff {
     public String getMcr() {
         return mcr;
     }
+
+
+    public ArrayList<OutpatientCase> getPatientCases() {
+        return patientCases;
+    }
+
+    /**
+     * Returns a string representation of the physician's patient cases. If no patient
+     * cases exist, returns "null".
+     *
+     * @return a string representing the patient cases.
+     */
 
     public void printAsAttending() {
         System.out.format("%-20s: %s (ID: %s)%n",

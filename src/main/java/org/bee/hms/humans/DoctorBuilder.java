@@ -43,6 +43,7 @@ public class DoctorBuilder extends StaffBuilder<DoctorBuilder> {
         this.mcr = dataGenerator.generateMCRNumber();
         this.title = "Doctor";
         this.department = "Medical";
+        this.patientCases = patientCases;
         return self();
     }
 
