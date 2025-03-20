@@ -8,6 +8,7 @@ import org.bee.hms.auth.SystemUser;
 import org.bee.hms.humans.Doctor;
 import org.bee.hms.humans.Nurse;
 import org.bee.hms.humans.Patient;
+import org.bee.pages.doctor.DoctorMainPage;
 import org.bee.ui.Color;
 import org.bee.ui.UiBase;
 import org.bee.ui.View;
@@ -64,9 +65,7 @@ public class LoginPage extends UiBase {
                 humanController.authenticate(user);
 
                 switch (user) {
-                    case Doctor doctor -> System.out.println("Welcome, Doctor!");
-
-                    // ToPage(new DoctorMainPage());
+                    case Doctor doctor -> ToPage(new DoctorMainPage());
                     case Nurse nurse -> System.out.println("Welcome, Nurse!");
 
                     // ToPage(new NurseMainPage());
