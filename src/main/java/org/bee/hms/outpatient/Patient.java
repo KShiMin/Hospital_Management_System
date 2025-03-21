@@ -1,8 +1,7 @@
 package org.bee.hms.outpatient;
-
+// Imports
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.bee.hms.humans.BloodType;
 import org.bee.hms.humans.Sex;
@@ -27,7 +26,7 @@ public class Patient extends Person {
 
     private int patientID;                                  // Patient Unique Identifier
     private BloodType bloodType;                           // Patient Blood Type
-    private ArrayList<Feedback> feedbacks;                  // List of Feedbacks provided by Patient
+    private ArrayList<String> medicalHistory;                  // List of Feedbacks provided by Patient
 
     /**
      * Returns a formatted string with Patient Details
@@ -52,17 +51,6 @@ public class Patient extends Person {
 
         String string = stringBuilder.toString();
         return string;
-    }
-
-    private static List<Patient> instances = new ArrayList<>();  // List of Patients
-
-    /**
-     * Retrieve and return list of all patient available
-     * 
-     * @return list containing all patients
-     */
-    public static List<Patient> getAllPatients() {
-        return instances;
     }
 
     /**
@@ -121,35 +109,36 @@ public class Patient extends Person {
     public void setBloodType(BloodType bloodType) {
         this.bloodType = bloodType;
     }
-
+    
     /**
-     * Retrieve a list of all feedbacks made by the patient
+     * Retrieves the medical history of the patient.
      * 
-     * @return feedbacks made by the patient
+     * @return the medical history as a string
      */
-    public ArrayList<Feedback> getFeedbacks() {
-        return feedbacks;
+    public ArrayList<String> getMedicalHistory() {
+        return this.medicalHistory;
     }
 
     /**
-     * Updates list of feedbacks made by the patient
+     * Sets the medical history of the patient.
      * 
-     * @param feedbacks a list of feedbacks made by the patient to be updated to
+     * @param medicalHistory the medical history to assign
      */
-    public void setFeedbacks(ArrayList<Feedback> feedbacks) {
-        this.feedbacks = feedbacks;
+    public void setMedicalHistory(ArrayList<String> medicalHistory) {
+        this.medicalHistory = medicalHistory;
     }
 
     /**
-     * Updates list of feedbacks made by patients by adding a new feedback
+     * Adds the medical history of the patient.
      * 
-     * @param feedback new feedback made by patient
+     * @param medicalHistory the medical history to assign
      */
-    public void addFeedBack(Feedback feedback) {
-        if (!feedbacks.contains(feedback)) {
-            feedbacks.add(feedback);
+    public void addMedicalHistory(String medicalHistory) {
+        if(!this.medicalHistory.contains(medicalHistory)) {
+            this.medicalHistory.add(medicalHistory);
         }
     }
+
 
     /**
      * Constructor for creating new Patient Object and adds to list of all patients
@@ -163,46 +152,14 @@ public class Patient extends Person {
      * @param dateOfBirth   the date of birth of the patient
      * @param contactNumber the contact number of the patient
      * @param bloodType     the blood type of the patient
-     * @param feedbacks     the feedbacks made by the patient
+     * @param medicalHistory     the medical history of the patient
      * 
      */
     public Patient(String name, String nric, String address, String nationality, Sex gender, Integer age,
-            Date dateOfBirth, String contactNumber, BloodType bloodType, ArrayList<Feedback> feedbacks) {
+            Date dateOfBirth, String contactNumber, BloodType bloodType, ArrayList<String> medicalHistory) {
         super(name, nric, address, nationality, gender, age, dateOfBirth, contactNumber);   // inherited from superclass Person
         setPatientID(count++);              // Auto assign patientID to count, then increment
         this.bloodType = bloodType;
-        this.feedbacks = feedbacks;
-        instances.add(this);                // Add new Patient Object to the list of Patients (instances)
+        this.medicalHistory = medicalHistory;
     }
-
-    /**
-     * Searching of Patient by its ID
-     * 
-     * @param patientID patient ID
-     * @return patient matching the ID
-     */
-    public static Patient searchPatientbyID(int patientID) {
-        for (Patient patient : instances) {
-            if (patient.getPatientID() == (patientID)) {
-                return patient;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Searching of Patient by its NRIC
-     * 
-     * @param patientNRIC patient NRIC
-     * @return patient matching the NRIC
-     */
-    public static Patient searchPatientbyNRIC(String patientNRIC) {
-        for (Patient patient : instances) {
-            if (patient.getPatientNRIC().equals(patientNRIC)) {
-                return patient;
-            }
-        }
-        return null;
-    }
-
 }

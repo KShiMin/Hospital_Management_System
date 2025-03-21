@@ -1,5 +1,4 @@
 package org.bee.hms.outpatient;
-
 import java.util.Date;
 
 import org.bee.hms.humans.Sex;

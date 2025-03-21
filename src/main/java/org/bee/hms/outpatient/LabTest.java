@@ -1,5 +1,4 @@
 package org.bee.hms.outpatient;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +18,7 @@ public class LabTest {
     private int labTestID;
     
     /** The type of lab test. */
-    private LabType type;
+    private LABTYPE type;
     
     /** The date when the lab test was performed or recorded. */
     private Date dateStamp;
@@ -28,7 +27,7 @@ public class LabTest {
     private VisitStatus status;
     
     /** The outpatient case associated with this lab test. */
-    private OutpatientCase outpatientCase;
+    // private OutpatientCase outpatientCase; // parallel importing
     
     /** The physician associated with this lab test. */
     private Physician physician;
@@ -55,13 +54,13 @@ public class LabTest {
      * @param remarks remarks or comments regarding the lab test.
      * @param cost the cost of the lab test.
      */
-    public LabTest(LabType type, Date dateStamp, VisitStatus status, OutpatientCase outpatientCase,
+    public LabTest(LABTYPE type, Date dateStamp, VisitStatus status,
                    Physician physician, String remarks, Double cost) {
         setLabTestID(count++);
         this.type = type;
         this.dateStamp = dateStamp;
         this.status = status;
-        this.outpatientCase = outpatientCase;
+        // this.outpatientCase = outpatientCase;
         this.physician = physician;
         this.remarks = remarks;
         this.cost = cost;
@@ -138,7 +137,7 @@ public class LabTest {
      *
      * @return the lab test type.
      */
-    public LabType getType() {
+    public LABTYPE getType() {
         return type;
     }
 
@@ -147,7 +146,7 @@ public class LabTest {
      *
      * @param type the lab test type to set.
      */
-    public void setType(LabType type) {
+    public void setType(LABTYPE type) {
         this.type = type;
     }
 
@@ -185,30 +184,6 @@ public class LabTest {
      */
     public void setStatus(VisitStatus status) {
         this.status = status;
-    }
-
-    /**
-     * Gets the outpatient case associated with this lab test.
-     *
-     * @return the outpatient case.
-     */
-    public OutpatientCase getOutpatientCase() {
-        return outpatientCase;
-    }
-
-    /**
-     * Sets the outpatient case for this lab test. If the lab test is already associated with an
-     * outpatient case, it is removed from that case before being added to the new one.
-     *
-     * @param outpatientCase the outpatient case to set.
-     */
-    public void setOutpatientCase(OutpatientCase outpatientCase) {
-        this.outpatientCase = outpatientCase;
-        if (this.outpatientCase != null) {
-            this.outpatientCase.removeLabTest(this);
-        }
-        this.outpatientCase = outpatientCase;
-        outpatientCase.addLabTest(this);
     }
 
     /**

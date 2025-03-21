@@ -1,12 +1,5 @@
 package org.bee.hms.outpatient;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-// Insurance Patient Information
-// import org.bee.hms.humans.Patient;
-
 
 /**
  * Represents a feedback entry provided by a patient regarding their medical
@@ -53,37 +46,6 @@ public class Feedback {
     }
 
     /**
-     * A static list that stores all instances of the class
-     * The list keeps track of all feedback objects created in the system.
-     */
-    private static List<Feedback> instances = new ArrayList<>();
-
-    /**
-     * Retrieves a list of all feedback instances.
-     *
-     * @return A list of all feedback objects.
-     */
-    public static List<Feedback> getAllFeedbacks() {
-        return instances;
-    }
-
-    /**
-     * Retrieves all feedback provided by a specific patient.
-     *
-     * @param patient The patient whose feedback is to be retrieved.
-     * @return A list of feedback objects associated with the given patient.
-     */
-    public static List<Feedback> getAllFeedbacksByPatient(Patient patient) {
-        List<Feedback> allFeedbacks = new ArrayList<>();
-        for (Feedback i : instances) {
-            if (i.getPatient().equals(patient)) {
-                allFeedbacks.add(i);
-            }
-        }
-        return allFeedbacks;
-    }
-
-    /**
      * Constructs a new Feedback instance and adds it to the list of feedbacks.
      *
      * @param patient           The patient who provided the feedback.
@@ -100,23 +62,6 @@ public class Feedback {
         this.remarks = remarks;
         this.medicalCareRating = medicalCareRating;
         this.serviceRating = serviceRating;
-
-        instances.add(this);
-    }
-
-    /**
-     * Searches for a feedback entry by its ID.
-     *
-     * @param feedbackID The ID of the feedback to search for.
-     * @return The feedback object with the matching ID, or null if not found.
-     */
-    public static Feedback searchFeedbackByID(int feedbackID) {
-        for (Feedback feedback : instances) {
-            if (feedback.getFeedbackID() == feedbackID) {
-                return feedback;
-            }
-        }
-        return null;
     }
 
     /**

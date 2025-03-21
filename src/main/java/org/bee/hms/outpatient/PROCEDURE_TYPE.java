@@ -1,5 +1,4 @@
 package org.bee.hms.outpatient;
-
 /**
  * Enums for procedure types
  */

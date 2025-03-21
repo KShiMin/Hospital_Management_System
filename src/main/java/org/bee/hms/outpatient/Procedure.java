@@ -1,11 +1,8 @@
 package org.bee.hms.outpatient;
 
 import java.util.Date;
-import java.util.List;
 
 import org.bee.hms.medical.VisitStatus;
-
-import java.util.ArrayList;
 
 /**
  * Represents a procedure performed as part of a treatment. A procedure includes
@@ -39,15 +36,9 @@ public class Procedure {
     
     /** The date and time when the procedure was performed. */
     private Date dateStamp;
-
     
     /** The cost associated with the procedure. */
     private Double cost;
-    
-    /**
-     * A static list that stores all Procedure instances.
-     */
-    private static List<Procedure> instances = new ArrayList<>();
 
     /**
      * Constructs a new Procedure instance with the specified details.
@@ -72,8 +63,6 @@ public class Procedure {
         this.remarks = remarks;
         this.dateStamp = datestamp;
         this.cost = cost;
-
-        instances.add(this);
     }
 
     /**
@@ -95,15 +84,6 @@ public class Procedure {
 
         String string = stringBuilder.toString();
         return string;
-    }
-
-    /**
-     * Retrieves a list of all Procedure instances.
-     *
-     * @return a list containing all procedures.
-     */
-    public static List<Procedure> getAllProcedures() {
-        return instances;
     }
 
     /**
@@ -266,20 +246,5 @@ public class Procedure {
      */
     public void setCost(Double cost) {
         this.cost = cost;
-    }
-
-    /**
-     * Searches for a procedure by its unique ID.
-     *
-     * @param id the procedure ID to search for.
-     * @return the Procedure with the matching ID, or null if no such procedure exists.
-     */
-    public static Procedure searchProcedureByID(int id) {
-        for (Procedure procedure : instances) {
-            if (procedure.getProcedureID() == id) {
-                return procedure;
-            }
-        }
-        return null;
     }
 }
