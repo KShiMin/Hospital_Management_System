@@ -1,8 +1,12 @@
 package org.bee.hms.medical;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bee.hms.billing.BillableItem;
 import org.bee.hms.humans.Doctor;
@@ -19,7 +23,7 @@ import org.bee.utils.JSONWritable;
  * charges. It also provides methods to generate random consultations, calculate charges, and retrieve related billable items.
  * </p>
  */
-public class Consultation implements JSONReadable, JSONWritable {
+public class Consultation implements JSONWritable, JSONReadable {
 
     /** The unique consultation ID */
     private String consultationId;
@@ -49,7 +53,7 @@ public class Consultation implements JSONReadable, JSONWritable {
     private String notes;
 
     /** Date of the outpatient appointment. */
-    private Date appointmentDate;
+    private LocalDateTime appointmentDate;
 
     /** Medical history of the patient. */
     private String medicalHistory;
@@ -67,7 +71,7 @@ public class Consultation implements JSONReadable, JSONWritable {
     private String visitReason;
 
     /** Follow-up date for the patient. */
-    private Date followUpDate;
+    private LocalDateTime followUpDate;
 
     /** Instructions given for the outpatient case. */
     private String instructions;
@@ -229,40 +233,7 @@ public class Consultation implements JSONReadable, JSONWritable {
         };
     }
 
-    /**
-     * Prints all outpatient case for clerk to view
-     */
-    public static void viewAllOutpatientCasesClerk() {
-        List<Consultation> cases = getAllConsultationCases();
-
-        if (cases.isEmpty()) {
-            System.out.println("No outpatient cases found.");
-            return;
-        }
-
-        System.out.printf("%-10s | %-30s | %-10s | %-15s | %-15s | %-30s | %-15s | %-15s | %-10s | %-10s\n",
-                "Case ID", "Appointment Date", "Patient ID", "Patient Name", "Status", "Diagnosis",
-                "Physician ID", "Physician Name");
-        System.out.println("-".repeat(190));
-
-        for (Consultation consultation : cases) {
-            System.out.printf("%-10s | %-30s | %-10s | %-15s | %-15s | %-30s | %-15s | %-15s\n",
-                    consultation.getConsultationId(),
-                    consultation.getAppointmentDate(),
-                    consultation.getPatient() != null ? consultation.getPatient().getPatientId() : "N/A",
-                    consultation.getPatient() != null ? consultation.getPatient().getName() : "N/A",
-                    consultation.getStatus(),
-                    consultation.getDiagnosis(),
-                    consultation.getDoctor() != null ? consultation.getDoctor().getMcr() : "N/A",
-                    consultation.getDoctor() != null ? consultation.getDoctor().getName() : "N/A");
-//                    consultation.getBilling() != null ? oc.getBilling().getBillingID() : "N/A",
-//                    consultation.getBilling() != null ? oc.getBilling().getFinalCost() : 0.0);
-        }
-    }
-
     public String getConsultationId() { return consultationId; }
-
-    public Date getAppointmentDate() { return appointmentDate; }
 
     public Patient getPatient() { return patient; }
 
@@ -274,50 +245,5 @@ public class Consultation implements JSONReadable, JSONWritable {
 
     public ConsultationType getConsultationType() { return type; }
 
-    // BILL
-    // public
 
-    public void addTreatment(Treatment treatment) {
-        if (!treatments.contains(treatment)) {
-            treatments.add(treatment);
-        }
-    }
-
-    public void removeTreatment(Treatment treatment) {
-        treatments.remove(treatment);
-    }
-
-    public void addLabTest(LabTest labTest) {
-        if (!labtests.contains(labTest)) {
-            labtests.add(labTest);
-        }
-    }
-
-    public void removeLabTest(LabTest labTest) {
-        labtests.remove(labTest);
-    }
-
-    public static void viewAllOutpatientCases(Doctor doctor) {
-        List<Consultation> cases = doctor.getPatientCases();
-
-        System.out.printf("%-8s | %-32s | %-10s | %-15s | %-20s | %-15s | %-20s | %-15s | %-10s | %-10s \n",
-                "Case ID", "Appointment Date", "Patient ID", "Patient Name", "Type", "Status", "Diagnosis",
-                "Physician Name");
-        System.out.println("-".repeat(190));
-
-        for (Consultation consultation : cases) {
-            System.out.printf("%-8s | %-32s | %-10s | %-15s | %-20s | %-15s | %-20s | %-15s\n",
-                    consultation.getConsultationId(),
-                    consultation.getAppointmentDate(),
-                    consultation.getPatient() != null ? consultation.getPatient().getPatientId() : "N/A",
-                    consultation.getPatient() != null ? consultation.getPatient().getName() : "N/A",
-                    consultation.getConsultationType(),
-                    consultation.getStatus(),
-                    consultation.getDiagnosis(),
-                    consultation.getDoctor() != null ? consultation.getDoctor().getName() : "N/A");
-//                    consultation.getBilling() != null ? oc.getBilling().getBillingID() : "N/A",
-//                    consultation.getBilling() != null ? oc.getBilling().getFinalCost() : 0.0);
-        }
-
-    }
 }
