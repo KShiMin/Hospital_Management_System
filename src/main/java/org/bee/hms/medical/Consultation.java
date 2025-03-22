@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.bee.hms.billing.BillableItem;
 import org.bee.utils.DataGenerator;
+import org.bee.utils.JSONReadable;
+import org.bee.utils.JSONWritable;
 
 /**
  * Represents a medical consultation.
@@ -18,33 +20,51 @@ import org.bee.utils.DataGenerator;
  * charges. It also provides methods to generate random consultations, calculate charges, and retrieve related billable items.
  * </p>
  */
-public class Consultation {
+public class Consultation implements JSONWritable, JSONReadable {
 
-    /** The unique consultation ID */
+    /**
+     * The unique consultation ID
+     */
     private String consultationId;
 
-    /** The type of the consultation (e.g., emergency, regular, specialized) */
+    /**
+     * The type of the consultation (e.g., emergency, regular, specialized)
+     */
     private ConsultationType type;
 
-    /** The ID of the doctor who performed the consultation */
+    /**
+     * The ID of the doctor who performed the consultation
+     */
     private String doctorId;
 
-    /** The date and time the consultation took place */
+    /**
+     * The date and time the consultation took place
+     */
     private LocalDateTime consultationTime;
 
-    /** The fee for the consultation */
+    /**
+     * The fee for the consultation
+     */
     private BigDecimal consultationFee;
 
-    /** The list of diagnostic codes associated with the consultation */
+    /**
+     * The list of diagnostic codes associated with the consultation
+     */
     private List<DiagnosticCode> diagnosticCodes;
 
-    /** The list of procedure codes associated with the consultation */
+    /**
+     * The list of procedure codes associated with the consultation
+     */
     private List<ProcedureCode> procedureCodes;
 
-    /** The list of medications prescribed during the consultation with their quantities */
+    /**
+     * The list of medications prescribed during the consultation with their quantities
+     */
     private Map<Medication, Integer> prescriptions;
 
-    /** Additional notes regarding the consultation */
+    /**
+     * Additional notes regarding the consultation
+     */
     private String notes;
 
     /**
@@ -180,5 +200,77 @@ public class Consultation {
             case SPECIALIZED_CONSULTATION -> "SPECIALIZED_CONSULTATION";
             case FOLLOW_UP -> "FOLLOW_UP_CONSULTATION";
         };
+    }
+
+    public String getConsultationId() {
+        return consultationId;
+    }
+
+    public ConsultationType getType() {
+        return type;
+    }
+
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public LocalDateTime getConsultationTime() {
+        return consultationTime;
+    }
+
+    public BigDecimal getConsultationFee() {
+        return consultationFee;
+    }
+
+    public List<DiagnosticCode> getDiagnosticCodes() {
+        return diagnosticCodes;
+    }
+
+    public List<ProcedureCode> getProcedureCodes() {
+        return procedureCodes;
+    }
+
+    public Map<Medication, Integer> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setConsultationId(String consultationId) {
+        this.consultationId = consultationId;
+    }
+
+    public void setType(ConsultationType type) {
+        this.type = type;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public void setConsultationTime(LocalDateTime consultationTime) {
+        this.consultationTime = consultationTime;
+    }
+
+    public void setConsultationFee(BigDecimal consultationFee) {
+        this.consultationFee = consultationFee;
+    }
+
+    public void setDiagnosticCodes(List<DiagnosticCode> diagnosticCodes) {
+        this.diagnosticCodes = diagnosticCodes;
+    }
+
+    public void setProcedureCodes(List<ProcedureCode> procedureCodes) {
+        this.procedureCodes = procedureCodes;
+    }
+
+    public void setPrescriptions(Map<Medication, Integer> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

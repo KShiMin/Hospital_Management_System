@@ -103,6 +103,8 @@ public class JSONHelper {
                 .registerTypeAdapterFactory(insuranceProviderFactory)
                 .registerTypeAdapterFactory(insurancePolicyFactory)
                 .registerTypeAdapterFactory(coverageFactory)
+                .registerTypeAdapter(ProcedureCode.class, new ProcedureCodeAdapter())
+                .registerTypeAdapter(DiagnosticCode.class, new DiagnosticCodeAdapter())
                 .setPrettyPrinting()
                 .create();
     }
