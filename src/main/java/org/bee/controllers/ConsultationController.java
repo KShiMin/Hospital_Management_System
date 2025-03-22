@@ -7,6 +7,11 @@ import org.bee.utils.DataGenerator;
 
 import java.util.List;
 
+/**
+ * Manages the storage and retrieval of {@link Consultation} objects.
+ * This class provides centralized management of consultations through a list and supports operations such as adding, removing, and searching for consultations.
+ * It extends BaseController to handle JSON persistence.
+ */
 public class ConsultationController extends BaseController<Consultation> {
     private static ConsultationController instance;
     private static final DataGenerator dataGenerator = DataGenerator.getInstance();
@@ -70,4 +75,35 @@ public class ConsultationController extends BaseController<Consultation> {
         return getAllItems();
     }
 
+
+    /**
+     * Removes a consultation from the list and saves to the JSON file.
+     *
+     * @param consultation The consultation to remove
+     * @return true if the consultation was removed, false otherwise
+     */
+    public boolean removeConsultation(Consultation consultation) {
+        boolean removed = items.remove(consultation);
+        if (removed) {
+            saveData();
+        }
+        return removed;
+    }
+
+    /**
+     * Updates an existing consultation and saves to the JSON file.
+     *
+     * @param oldConsultation The consultation to be updated
+     * @param newConsultation The updated consultation data
+     * @return true if the consultation was updated, false if it was not found
+     */
+    public boolean updateConsultation(Consultation oldConsultation, Consultation newConsultation) {
+        int index = items.indexOf(oldConsultation);
+        if (index != -1) {
+            items.set(index, newConsultation);
+            saveData();
+            return true;
+        }
+        return false;
+    }
 }

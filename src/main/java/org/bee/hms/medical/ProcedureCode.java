@@ -314,7 +314,7 @@ public class ProcedureCode implements BillableItem, ClaimableItem {
      */
     public static ProcedureCode getRandomCodeForBenefitType(BenefitType benefitType, boolean isInPatient) {
         List<String> matchingCodes = new java.util.ArrayList<>();
-        
+
         for (Map.Entry<String, ProcedureCode> entry : CODE_REGISTRY.entrySet()) {
             ProcedureCode code = entry.getValue();
 
@@ -322,7 +322,7 @@ public class ProcedureCode implements BillableItem, ClaimableItem {
                 matchingCodes.add(entry.getKey());
             }
         }
-        
+
         if (matchingCodes.isEmpty()) {
             throw new IllegalArgumentException("No procedure codes found for benefit type: " + benefitType);
         }
