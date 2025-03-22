@@ -297,27 +297,97 @@ public class Consultation implements JSONReadable, JSONWritable {
         labtests.remove(labTest);
     }
 
-    public static void viewAllOutpatientCases(Doctor doctor) {
-        List<Consultation> cases = doctor.getPatientCases();
-
-        System.out.printf("%-8s | %-32s | %-10s | %-15s | %-20s | %-15s | %-20s | %-15s | %-10s | %-10s \n",
-                "Case ID", "Appointment Date", "Patient ID", "Patient Name", "Type", "Status", "Diagnosis",
-                "Physician Name");
-        System.out.println("-".repeat(190));
-
-        for (Consultation consultation : cases) {
-            System.out.printf("%-8s | %-32s | %-10s | %-15s | %-20s | %-15s | %-20s | %-15s\n",
-                    consultation.getConsultationId(),
-                    consultation.getAppointmentDate(),
-                    consultation.getPatient() != null ? consultation.getPatient().getPatientId() : "N/A",
-                    consultation.getPatient() != null ? consultation.getPatient().getName() : "N/A",
-                    consultation.getConsultationType(),
-                    consultation.getStatus(),
-                    consultation.getDiagnosis(),
-                    consultation.getDoctor() != null ? consultation.getDoctor().getName() : "N/A");
-//                    consultation.getBilling() != null ? oc.getBilling().getBillingID() : "N/A",
-//                    consultation.getBilling() != null ? oc.getBilling().getFinalCost() : 0.0);
-        }
-
+    public void setConsultationId(String consultationId) {
+        this.consultationId = consultationId;
     }
+
+    public void setType(ConsultationType type) {
+        this.type = type;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public void setConsultationTime(LocalDateTime consultationTime) {
+        this.consultationTime = consultationTime;
+    }
+
+    public void setAppointmentDate(Date appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+    public void setVisitReason(String visitReason) {
+        this.visitReason = visitReason;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
+    }
+
+    public void setFollowUpDate(Date followUpDate) {
+        this.followUpDate = followUpDate;
+    }
+
+    public void setStatus(STATUS status) {
+        this.status = status;
+    }
+
+    public void setDepartment(DEPARTMENT department) {
+        this.department = department;
+    }
+
+    public void setProcedureCodes(List<ProcedureCode> procedureCodes) {
+        this.procedureCodes = procedureCodes;
+    }
+
+    public void setDiagnosticCodes(List<DiagnosticCode> diagnosticCodes) {
+        this.diagnosticCodes = diagnosticCodes;
+    }
+
+    public void setPrescriptions(Map<Medication, Integer> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public void setMedicalHistory(String medicalHistory) {
+        this.medicalHistory = medicalHistory;
+    }
+
+    public void setTreatments(ArrayList<Treatment> treatments) {
+        this.treatments = treatments;
+    }
+
+    public void setLabtests(ArrayList<LabTest> labtests) {
+        this.labtests = labtests;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public static void setInstances(List<Consultation> instances) {
+        Consultation.instances = instances;
+    }
+
+    public void setConsultationFee(BigDecimal consultationFee) {
+        this.consultationFee = consultationFee;
+    }
+
+    public LocalDateTime getConsultationTime() {
+        return consultationTime;
+    }
+
+
 }
