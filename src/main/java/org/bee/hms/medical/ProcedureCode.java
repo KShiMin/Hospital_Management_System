@@ -34,7 +34,7 @@ public class ProcedureCode implements BillableItem, ClaimableItem {
      * @param code The unique procedure code.
      * @param description The description of the procedure.
      */
-    public ProcedureCode(String code, String description) {
+    private ProcedureCode(String code, String description) {
         this.code = code;
         this.description = description;
         this.price = DEFAULT_PRICE;
@@ -302,10 +302,10 @@ public class ProcedureCode implements BillableItem, ClaimableItem {
         int randomIndex = (int) (Math.random() * codes.length);
         return createFromCode(codes[randomIndex]);
     }
-    
+
     /**
      * Gets a random procedure code that matches the specified benefit type
-     * 
+     *
      * @param benefitType The benefit type to match
      * @return A randomly selected ProcedureCode that matches the specified benefit type
      * @throws IllegalArgumentException if no procedure codes match the specified benefit type
@@ -313,24 +313,24 @@ public class ProcedureCode implements BillableItem, ClaimableItem {
     public static ProcedureCode getRandomCodeForBenefitType(BenefitType benefitType) {
         // Create a list to store matching codes
         java.util.List<String> matchingCodes = new java.util.ArrayList<>();
-        
+
         // Iterate through all codes in the registry
         for (Map.Entry<String, ProcedureCode> entry : CODE_REGISTRY.entrySet()) {
             ProcedureCode code = entry.getValue();
-            
+
             // Check if this code matches the specified benefit type
             // We'll check for both inpatient and outpatient scenarios
-            if (code.resolveBenefitType(true) == benefitType || 
+            if (code.resolveBenefitType(true) == benefitType ||
                 code.resolveBenefitType(false) == benefitType) {
                 matchingCodes.add(entry.getKey());
             }
         }
-        
+
         // If no matching codes were found, throw an exception
         if (matchingCodes.isEmpty()) {
             throw new IllegalArgumentException("No procedure codes found for benefit type: " + benefitType);
         }
-        
+
         // Select a random code from the matching codes
         int randomIndex = (int) (Math.random() * matchingCodes.size());
         return createFromCode(matchingCodes.get(randomIndex));

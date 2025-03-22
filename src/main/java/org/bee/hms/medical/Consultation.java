@@ -234,43 +234,5 @@ public class Consultation implements JSONWritable, JSONReadable {
         return prescriptions;
     }
 
-    public String getNotes() {
-        return notes;
-    }
 
-    public void setConsultationId(String consultationId) {
-        this.consultationId = consultationId;
-    }
-
-    public void setType(ConsultationType type) {
-        this.type = type;
-    }
-
-    public void setDoctorId(String doctorId) {
-        this.doctorId = doctorId;
-    }
-
-    public void setConsultationTime(LocalDateTime consultationTime) {
-        this.consultationTime = consultationTime;
-    }
-
-    public void setConsultationFee(BigDecimal consultationFee) {
-        this.consultationFee = consultationFee;
-    }
-
-    public void setDiagnosticCodes(List<DiagnosticCode> diagnosticCodes) {
-        this.diagnosticCodes = diagnosticCodes;
-    }
-
-    public void setProcedureCodes(List<ProcedureCode> procedureCodes) {
-        this.procedureCodes = procedureCodes;
-    }
-
-    public void setPrescriptions(Map<Medication, Integer> prescriptions) {
-        this.prescriptions = prescriptions;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 }
