@@ -43,23 +43,17 @@ public class ConsultationController extends BaseController<Consultation> {
         List<Patient> patients = humanController.getAllPatients();
         List<Doctor> doctors = humanController.getAllDoctors();
 
-        if (patients.isEmpty()) {
-            System.err.println("No patients available to generate appointments");
+        if (patients.isEmpty() || doctors.isEmpty()) {
+            System.err.println("No patients or doctors available to generate appointments");
             return;
         }
 
         for (int i = 0; i < 10; i++) {
-            // Randomly select a patient
-            Patient patient = patients.get(dataGenerator.generateRandomInt(patients.size()));
+            Patient patient = dataGenerator.getRandomElement(patients);
 
-            // Randomly decide whether to assign a doctor (50% chance)
-            Doctor doctor = null;
-            if (!doctors.isEmpty() && dataGenerator.generateRandomInt(2) == 0) {
-                doctor = doctors.get(dataGenerator.generateRandomInt(doctors.size()));
-            }
+            Doctor doctor = dataGenerator.getRandomElement(doctors);;
 
-            // Generate the appointment
-            Consultation consultation = dataGenerator.generateRandomConsultation(patient, doctor);
+            Consultation consultation = Consultation.withRandomData(patient, doctor);
             items.add(consultation);
         }
 
