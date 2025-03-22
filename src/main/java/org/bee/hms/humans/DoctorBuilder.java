@@ -1,8 +1,5 @@
 package org.bee.hms.humans;
 
-import org.bee.hms.medical.Consultation;
-
-import java.util.ArrayList;
 
 /**
  * Builder class for creating instances of {@link Doctor}.
@@ -12,7 +9,6 @@ public class DoctorBuilder extends StaffBuilder<DoctorBuilder> {
     /** The Medical Council Registration (MCR) number of the doctor. */
     String mcr;
 
-    ArrayList<Consultation> patientCases = new ArrayList<>();
 
     /**
      * Default constructor for {@code DoctorBuilder}.
@@ -28,11 +24,6 @@ public class DoctorBuilder extends StaffBuilder<DoctorBuilder> {
      */
     public DoctorBuilder mcr(String mcr) {
         this.mcr = mcr;
-        return this;
-    }
-
-    public DoctorBuilder patientCases(ArrayList<Consultation> patientCases) {
-        this.patientCases = patientCases;
         return this;
     }
 
@@ -85,6 +76,6 @@ public class DoctorBuilder extends StaffBuilder<DoctorBuilder> {
     @Override
     public Doctor build() {
         validateRequiredFields();
-        return new Doctor(this, patientCases);
+        return new Doctor(this);
     }
 }

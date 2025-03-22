@@ -16,7 +16,6 @@ public class Doctor extends Staff {
      * The Medical Council Registration (MCR) number of the doctor.
      */
     private final String mcr;
-    private ArrayList<Consultation> patientCases;
 
 
     /**
@@ -29,10 +28,10 @@ public class Doctor extends Staff {
      *                Contains the data required to populate both doctor-specific fields such as the MCR number,
      *                and inherited attributes of the Doctor class.
      */
-    Doctor(DoctorBuilder builder, ArrayList<Consultation> patientCases) {
+    Doctor(DoctorBuilder builder) {
         super(builder);
         this.mcr = builder.mcr;
-        this.patientCases = patientCases;
+        this.type = "doctor";
     }
 
 
@@ -76,7 +75,4 @@ public class Doctor extends Staff {
         System.out.println("=====================================================================");
     }
 
-    public ArrayList<Consultation> getPatientCases() {
-        return patientCases;
-    }
 }

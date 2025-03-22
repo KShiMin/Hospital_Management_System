@@ -246,4 +246,7 @@ public class Consultation implements JSONWritable, JSONReadable {
     public ConsultationType getConsultationType() { return type; }
 
 
+    public LocalDateTime getAppointmentDate() {
+        return appointmentDate;
+    }
 }
