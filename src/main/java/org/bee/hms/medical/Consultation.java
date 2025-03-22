@@ -52,9 +52,6 @@ public class Consultation implements JSONWritable, JSONReadable {
     /** Additional notes regarding the consultation */
     private String notes;
 
-    /** Date of the outpatient appointment. */
-    private LocalDateTime appointmentDate;
-
     /** Medical history of the patient. */
     private String medicalHistory;
 
@@ -245,8 +242,4 @@ public class Consultation implements JSONWritable, JSONReadable {
 
     public ConsultationType getConsultationType() { return type; }
 
-
-    public LocalDateTime getAppointmentDate() {
-        return appointmentDate;
-    }
 }
