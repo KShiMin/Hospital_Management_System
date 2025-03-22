@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
+
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +20,7 @@ import org.bee.hms.humans.Patient;
 import org.bee.hms.telemed.Appointment;
 import org.bee.hms.telemed.AppointmentStatus;
 import org.bee.utils.DataGenerator;
+import java.util.Scanner;
 
 import okhttp3.FormBody;
 import okhttp3.MediaType;
