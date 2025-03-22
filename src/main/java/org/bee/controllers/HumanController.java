@@ -11,6 +11,7 @@ import org.bee.hms.humans.Doctor;
 import org.bee.hms.humans.Human;
 import org.bee.hms.humans.Nurse;
 import org.bee.hms.humans.Patient;
+import org.bee.hms.medical.Consultation;
 import org.bee.utils.JSONHelper;
 
 import javax.print.Doc;
@@ -28,6 +29,7 @@ public class HumanController {
     private static HumanController instance;
 
     private List<Human> humans = new ArrayList<>();
+    private List<Consultation> consultation = new ArrayList<>();
     private final JSONHelper jsonHelper = JSONHelper.getInstance();
 
     private SystemUser authenticatedUser;
@@ -81,9 +83,9 @@ public class HumanController {
 
     public String getUserGreeting() {
         return switch (authenticatedUser) {
-            case Doctor doc -> String.format("Welcome back %s MCR No. %s", doc.getName(), doc.getMcr());
-            case Patient patient -> String.format("Welcome back %s (%s)", patient.getName(), patient.getPatientId());
-            case Nurse nurse -> String.format("Welcome back %s RNID No. %s", nurse.getName(), nurse.getRnid());
+            case Doctor doc -> String.format("Welcome back!\nName: %s, MCR No.: %s", doc.getName(), doc.getMcr());
+            case Patient patient -> String.format("Welcome back!\n Name: %s, ID:(%s)", patient.getName(), patient.getPatientId());
+            case Nurse nurse -> String.format("Welcome back!\n Name: %s, RNID No.: %s", nurse.getName(), nurse.getRnid());
             case null, default -> throw new IllegalStateException("There is no logged in user");
         };
     }
@@ -224,6 +226,16 @@ public class HumanController {
         return humans.stream()
                 .filter(human -> human instanceof Patient)
                 .map(human -> (Patient) human)
+                .collect(Collectors.toList());
+    }
+
+    public ArrayList<Consultation> getPatientCases() {
+        return new ArrayList<>(consultation);
+    }
+
+    public List<Consultation> getConsultationsByDoctor(Doctor doctor) {
+        return consultation.stream()
+                .filter(c -> c.getDoctor().equals(doctor))
                 .collect(Collectors.toList());
     }
 }
