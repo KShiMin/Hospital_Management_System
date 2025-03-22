@@ -13,72 +13,60 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
+    
     implementation("com.google.code.gson:gson:2.12.1")
-    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
 
 application {
     mainClass.set("org.bee.Main")
 }
 
+val databaseDir = layout.projectDirectory.dir("database")
+
 tasks.test {
     useJUnitPlatform()
+    
+    // Copy database files before running tests
+    doFirst {
+        // Create and copy database files using modern API
+        val testDbDir = layout.buildDirectory.dir("database")
+        copy {
+            from(databaseDir)
+            into(testDbDir)
+        }
+        
+        // Set system property for database location
+        systemProperty("database.dir", testDbDir.get().asFile.absolutePath)
+    }
+    
+    // Configure test execution
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true  // Show stdout/stderr from tests
+    }
+
+    reports {
+        html.required.set(true)
+        junitXml.required.set(true)
+    }
 }
 
 tasks.jar {
     manifest {
         attributes["Main-Class"] = "org.bee.Main"
     }
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    
+    archiveBaseName.set(project.name)
+    
+    from(configurations.runtimeClasspath.get().map {
+        if (it.isDirectory) it else project.zipTree(it) 
+    })
+    
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-// Create tasks for running test classes
-val testClasses = listOf(
-    "BillBuilderTest",
-    "ConsultationTest",
-    "DiagnosticCodeTest",
-    "DoctorTest",
-    "GovernmentProviderTest",
-    "HospitalCodeTest",
-    "InsuranceClaimTest",
-    "InsuranceTest",
-    "NurseTest",
-    "PatientTest",
-    "PrivateProviderTest",
-    "ProcedureCodeTest",
-    "VisitTest",
-    "WardTest"
-)
-
-testClasses.forEach { className ->
-    tasks.register<JavaExec>("run${className}") {
-        group = "verification"
-        description = "Run $className"
-        
-        doFirst {
-            // Create temp directory for database files
-            file("build/database").mkdirs()
-            // Copy database files to temp location
-            copy {
-                from("database")
-                into("build/database")
-            }
-            
-            // Set system property for database location
-            systemProperty("database.dir", file("build/database").absolutePath)
-        }
-        
-        classpath = sourceSets["main"].runtimeClasspath
-        mainClass.set("org.bee.tests.${className}")
-        workingDir = projectDir // Set working directory to project root
-    }
-}
-
-tasks.register("runAllTests") {
-    group = "verification"
-    description = "Run all test classes"
-    dependsOn(testClasses.map { "run${it}" })
 }
 
 tasks.register<JavaExec>("runJar") {
@@ -86,14 +74,15 @@ tasks.register<JavaExec>("runJar") {
     
     doFirst {
         // Copy database folder to execution directory
+        val libsDir = layout.buildDirectory.dir("libs")
         copy {
-            from("database")
-            into("build/libs/database")
+            from(databaseDir)
+            into(libsDir.get().dir("database"))
         }
     }
     
     classpath = files(tasks.jar.get().outputs.files)
     mainClass.set("org.bee.Main")
     standardInput = System.`in`
-    workingDir = file("build/libs")
+    workingDir = layout.buildDirectory.dir("libs").get().asFile
 }

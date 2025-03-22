@@ -24,7 +24,7 @@ public class Bill {
     /** Date and time when the bill was created. */
     private LocalDateTime billDate;
     /** List of billing line items included in the bill. */
-    private List<BillingItem> lineItems;
+    private List<BillingItemLine> lineItems;
     /** A mapping of categorized charges, where the key is the category name and the value is the total amount for that category. */
     private Map<String, BigDecimal> categorizedCharges;
     /** Current status of the bill, such as DRAFT. */
@@ -48,6 +48,7 @@ public class Bill {
         this.categorizedCharges = new HashMap<>();
         this.status = BillingStatus.DRAFT;
         this.isInpatient = builder.isInpatient;
+        this.isEmergency = builder.isEmergency;
     }
 
     /**
@@ -66,7 +67,7 @@ public class Bill {
             throw new IllegalArgumentException("Quantity must be positive");
         }
 
-        lineItems.add(new BillingItem(item, quantity));
+        lineItems.add(new BillingItemLine(item, quantity));
         recalculateTotals();
     }
 
@@ -75,60 +76,77 @@ public class Bill {
      * Updates the {@code insuranceCoverage} and {@code patientResponsibility} values.
      * The billing status is also updated to {@code BillingStatus.INSURANCE_PENDING} if insurance is active.
      */
-    public Optional<InsuranceClaim> calculateInsuranceCoverage() {
-        if (lineItems.isEmpty()) {
-            return Optional.empty();
+    public InsuranceCoverageResult calculateInsuranceCoverage() {
+        if (insurancePolicy == null) {
+            return InsuranceCoverageResult.denied("No insurance policy associated with this bill");
         }
-        if (insurancePolicy.isActive()) {
-            Coverage coverage = insurancePolicy.getCoverage();
-            BigDecimal deductibleAmount = coverage.getDeductibleAmount();
-            BigDecimal claimableAmount = BigDecimal.ZERO;
-            BigDecimal accidentCoverage = BigDecimal.ZERO;
-            BigDecimal totalCoverage = BigDecimal.ZERO;
-            for (BillingItem item : lineItems) {
 
-                if (item instanceof ClaimableItem claimableItem) {
-                    if (coverage.isItemCovered(claimableItem, isInpatient)) {
-                        BigDecimal itemAmount = item.getTotalPrice();
-                        claimableAmount = claimableAmount.add(itemAmount);
+        if (lineItems.isEmpty()) {
+            return InsuranceCoverageResult.denied("Bill contains no line items");
+        }
 
-                        if (isEmergency && claimableItem.getAccidentSubType() != null) {
-                            AccidentType accidentType = claimableItem.getAccidentSubType();
-                            BigDecimal accidentPayout = coverage.calculateAccidentPayout(accidentType);
+        if (!insurancePolicy.isActive()) {
+            return InsuranceCoverageResult.denied("Insurance policy is not active");
+        }
 
-                            CoverageLimit limits = coverage.getLimits();
-                            if (limits.isWithinAccidentLimit(accidentType, accidentPayout)) {
-                                accidentCoverage = accidentCoverage.add(accidentPayout);
-                            }
+        Coverage coverage = insurancePolicy.getCoverage();
+        BigDecimal deductibleAmount = coverage.getDeductibleAmount();
+        BigDecimal claimableAmount = BigDecimal.ZERO;
+        BigDecimal accidentCoverage = BigDecimal.ZERO;
+
+        // Calculate total claimable amount
+        for (BillingItemLine itemLine : lineItems) {
+            if (itemLine.getItem() instanceof ClaimableItem claimableItem) {
+                if (coverage.isItemCovered(claimableItem, isInpatient)) {
+                    BigDecimal itemAmount = itemLine.getTotalPrice();
+                    claimableAmount = claimableAmount.add(itemAmount);
+
+                    if (isEmergency && claimableItem.getAccidentSubType() != null) {
+                        AccidentType accidentType = claimableItem.getAccidentSubType();
+                        BigDecimal accidentPayout = coverage.calculateAccidentPayout(accidentType);
+
+                        CoverageLimit limits = coverage.getLimits();
+                        if (limits.isWithinAccidentLimit(accidentType, accidentPayout)) {
+                            accidentCoverage = accidentCoverage.add(accidentPayout);
                         }
                     }
-
                 }
-
             }
-            BigDecimal claimAmount = claimableAmount.subtract(deductibleAmount);
-            CoverageLimit limits = coverage.getLimits();
-            if (limits.isWithinAnnualLimit(claimAmount)) {
-                totalCoverage = totalCoverage.add(claimableAmount);
-            }
-            totalCoverage = totalCoverage.add(accidentCoverage);
-            status = BillingStatus.INSURANCE_PENDING;
-
-            if (totalCoverage.compareTo(BigDecimal.ZERO) > 0) {
-
-                InsuranceClaim claim = InsuranceClaim.createNew(
-                        this,
-                        insurancePolicy.getInsuranceProvider(),
-                        insurancePolicy,
-                        this.patient,
-                        totalCoverage
-                );
-                return Optional.of(claim);
-            }
-
         }
-        return Optional.empty();
 
+        // If it does not exceed deductible, patient will be paying so...
+        if (deductibleAmount.compareTo(BigDecimal.ZERO) > 0 &&
+                claimableAmount.compareTo(deductibleAmount) <= 0) {
+            return InsuranceCoverageResult.denied("Bill amount does not exceed deductible");
+        }
+
+        BigDecimal claimAmount = claimableAmount.subtract(deductibleAmount);
+
+        // Check annual limit
+        CoverageLimit limits = coverage.getLimits();
+        if (!limits.isWithinAnnualLimit(claimAmount)) {
+            // Cap at annual limit if it exceeds annual limit
+            claimAmount = limits.getAnnualLimit();
+        }
+
+        // Add accident coverage (accidentCoverage will be 0 unless it's emergency (accident))
+        BigDecimal totalCoverage = claimAmount.add(accidentCoverage);
+
+        status = BillingStatus.INSURANCE_PENDING;
+
+        // Return claim if there's a valid amount to claim
+        if (totalCoverage.compareTo(BigDecimal.ZERO) > 0) {
+            InsuranceClaim claim = InsuranceClaim.createNew(
+                    this,
+                    insurancePolicy.getInsuranceProvider(),
+                    insurancePolicy,
+                    this.patient,
+                    totalCoverage
+            );
+            return InsuranceCoverageResult.approved(claim);
+        }
+
+        return InsuranceCoverageResult.denied("No claimable amount");
     }
 
     /**
@@ -160,7 +178,7 @@ public class Bill {
     private void recalculateTotals() {
         categorizedCharges.clear();
 
-        for (BillingItem item : lineItems) {
+        for (BillingItemLine item : lineItems) {
             String category = item.getCategory();
             BigDecimal totalPrice = item.getTotalPrice();
             categorizedCharges.put(category,

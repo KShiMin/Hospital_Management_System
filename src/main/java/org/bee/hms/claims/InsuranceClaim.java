@@ -1,17 +1,19 @@
 package org.bee.hms.claims;
 
-import org.bee.hms.billing.Bill;
-import org.bee.hms.insurance.InsuranceProvider;
-import org.bee.hms.policy.InsurancePolicy;
-import org.bee.utils.DataGenerator;
-import org.bee.hms.humans.Patient;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.bee.hms.billing.Bill;
+import org.bee.hms.humans.Patient;
+import org.bee.hms.insurance.InsuranceProvider;
+import org.bee.hms.policy.InsurancePolicy;
+import org.bee.utils.DataGenerator;
+import org.bee.utils.JSONReadable;
+import org.bee.utils.JSONWritable;
 
 /**
  * Represents an insurance claim made.
@@ -20,7 +22,7 @@ import java.util.Map;
  * </p>
  */
 
-public class InsuranceClaim {
+public class InsuranceClaim implements JSONWritable, JSONReadable {
 
     /**
      * Unique identifier for the insurance claim.
@@ -317,7 +319,17 @@ public class InsuranceClaim {
      * @return The approved amount, or null if not yet approved
      */
     public BigDecimal getApprovedAmount() {
-        return approvedAmount;
+        return approvedAmount == null ? BigDecimal.ZERO : approvedAmount;
+    }
+
+
+    /**
+     * Gets the claim amount for the claim.
+     *
+     * @return The claim Amount
+     */
+    public BigDecimal getClaimAmount() {
+        return claimAmount;
     }
 
 
@@ -387,6 +399,15 @@ public class InsuranceClaim {
     public boolean isApproved() {
         return claimStatus == ClaimStatus.APPROVED ||
                 claimStatus == ClaimStatus.PARTIALLY_APPROVED;
+    }
+    
+    /**
+     * Gets the current status of the claim.
+     *
+     * @return The claim status
+     */
+    public ClaimStatus getClaimStatus() {
+        return claimStatus;
     }
 
     /**

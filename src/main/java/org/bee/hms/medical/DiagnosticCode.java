@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.bee.hms.billing.BillableItem;
 import org.bee.hms.policy.BenefitType;
 import org.bee.hms.policy.ClaimableItem;
 import org.bee.utils.CSVHelper;
+import org.bee.utils.DataGenerator;
 
 /**
  * Represents a diagnostic code, typically used for medical diagnosis.
@@ -40,6 +42,8 @@ public class DiagnosticCode implements BillableItem, ClaimableItem {
 
     /** The cost of the diagnostic code, used for billing purposes */
     private BigDecimal cost;// keep this for billing purpose
+
+    private static final DataGenerator gen = DataGenerator.getInstance();
 
     /** A registry to store diagnostic codes loaded from a CSV file */
     private static final Map<String, DiagnosticCode> CODE_REGISTRY = new HashMap<>();
@@ -246,7 +250,9 @@ public class DiagnosticCode implements BillableItem, ClaimableItem {
                 new BenefitMapping("^Z74.*", BenefitType.PREVENTIVE_CARE),  // Need for assistance
                 new BenefitMapping("^(E66|I10|J45|N18).*", BenefitType.CHRONIC_CONDITIONS), // Chronic
                 new BenefitMapping("^(J06|N30|R05).*", BenefitType.ACUTE_CONDITIONS),  // Acute
-                new BenefitMapping("^Z5[1-3].*", BenefitType.PREVENTIVE_CARE) // Health screenings
+                new BenefitMapping("^Z5[1-3].*", BenefitType.PREVENTIVE_CARE), // Health screenings
+                new BenefitMapping("^Z[0-9]{2}.*", isInpatient ? BenefitType.HOSPITALIZATION : BenefitType.OUTPATIENT_TREATMENTS)
+
         );
 
         for (BenefitMapping mapping : benefitMappings) {
@@ -297,9 +303,37 @@ public class DiagnosticCode implements BillableItem, ClaimableItem {
      * @return A randomly selected DiagnosticCode
      */
     public static DiagnosticCode getRandomCode() {
-        String[] codes = CODE_REGISTRY.keySet().toArray(new String[0]);
-        int randomIndex = (int) (Math.random() * codes.length);
-        return createFromCode(codes[randomIndex]);
+        Set<String> codes = CODE_REGISTRY.keySet();
+        return createFromCode(gen.getRandomElement(codes));
+    }
+    
+    /**
+     * Gets a random diagnostic code that matches the specified benefit type
+     * 
+     * @param benefitType The benefit type to match
+     * @return A randomly selected DiagnosticCode that matches the specified benefit type
+     * @throws IllegalArgumentException if no diagnostic codes match the specified benefit type
+     */
+    public static DiagnosticCode getRandomCodeForBenefitType(BenefitType benefitType, boolean isInPatient) {
+        // Create a list to store matching codes
+        List<String> matchingCodes = new java.util.ArrayList<>();
+        
+        // Iterate through all codes in the registry
+        for (Map.Entry<String, DiagnosticCode> entry : CODE_REGISTRY.entrySet()) {
+            DiagnosticCode code = entry.getValue();
+            
+            // Check if this code matches the specified benefit type
+            // We'll check for both inpatient and outpatient scenarios
+            if (code.resolveBenefitType(isInPatient) == benefitType) {
+                matchingCodes.add(entry.getKey());
+            }
+        }
+        
+        if (matchingCodes.isEmpty()) {
+            throw new IllegalArgumentException("No diagnostic codes found for benefit type: " + benefitType);
+        }
+        
+        return createFromCode(gen.getRandomElement(matchingCodes));
     }
 }
 
