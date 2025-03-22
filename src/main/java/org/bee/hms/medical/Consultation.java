@@ -8,6 +8,8 @@ import org.bee.hms.billing.BillableItem;
 import org.bee.hms.humans.Doctor;
 import org.bee.hms.humans.Patient;
 import org.bee.utils.DataGenerator;
+import org.bee.utils.JSONReadable;
+import org.bee.utils.JSONWritable;
 
 /**
  * Represents a medical consultation.
@@ -17,7 +19,7 @@ import org.bee.utils.DataGenerator;
  * charges. It also provides methods to generate random consultations, calculate charges, and retrieve related billable items.
  * </p>
  */
-public class Consultation {
+public class Consultation implements JSONReadable, JSONWritable {
 
     /** The unique consultation ID */
     private String consultationId;

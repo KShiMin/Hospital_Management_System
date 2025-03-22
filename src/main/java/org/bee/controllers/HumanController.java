@@ -5,10 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.bee.hms.auth.SystemUser;
-import org.bee.hms.humans.Doctor;
-import org.bee.hms.humans.Human;
-import org.bee.hms.humans.Nurse;
-import org.bee.hms.humans.Patient;
+import org.bee.hms.humans.*;
+import org.bee.utils.InfoUpdaters.PatientUpdater;
 
 /**
  * Controller class that manages all human entities in the system.
@@ -92,8 +90,32 @@ public class HumanController extends BaseController<Human> {
         };
     }
 
+
+    public SystemUser getLoggedInUser() {
+        return authenticatedUser;
+    }
+
     public void addHuman(Human human) {
         addItem(human);
+    }
+
+    /**
+     * Updates a patient using the PatientUpdater.
+     *
+     * @param patientId ID of the patient to update
+     * @param updater   PatientUpdater with the fields to update
+     */
+    public void updatePatient(String patientId, PatientUpdater updater) {
+        Patient patient = findPatientById(patientId);
+        updateEntity(patient, updater);
+    }
+
+
+    private Patient findPatientById(String patientId) {
+        return getAllPatients().stream()
+                .filter(p -> p.getPatientId().equals(patientId))
+                .findFirst()
+                .orElse(null);
     }
 
     public Optional<SystemUser> findUserByUsername(String username) {
