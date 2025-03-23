@@ -51,19 +51,28 @@ public class OutpatientPatientInfoPage extends UiBase {
                 return;
             }
             lv.setTitleHeader("List of Outpatient Cases");
-            List<Consultation> cases = consultationController.getAllOutpatientCases();
+            List<Consultation> allCases = consultationController.getAllOutpatientCases();
+            List<Consultation> doctorCases = allCases.stream()
+                    .filter(c -> c.getDoctor() != null && c.getDoctor().equals(doctor))
+                    .toList();
+
+            if (doctorCases.isEmpty()) {
+                lv.addItem(new TextView(this.canvas, "You have no outpatient cases.", Color.YELLOW));
+                canvas.setRequireRedraw(true);
+                return;
+            }
             int index = 0;
 
             // Show list of patient
-            for (Consultation consultation : cases) {
+            for (Consultation consultation : doctorCases) {
                 lv.addItem(new TextView(this.canvas, index + ". " + consultation.getPatient().getName(), Color.GREEN));
                 index += 1;
             }
 
             // When selecting "Select Patient Index"
             lv.attachUserInput("Select Patient Index ", str -> {
-                int selectedIndex = InputHelper.getValidIndex("Select Patient index", cases);
-                consultation = cases.get(selectedIndex);
+                int selectedIndex = InputHelper.getValidIndex("Select Patient index", doctorCases);
+                consultation = doctorCases.get(selectedIndex);
 
                 try {
                     displayOutpatientCase(consultation, lv);
