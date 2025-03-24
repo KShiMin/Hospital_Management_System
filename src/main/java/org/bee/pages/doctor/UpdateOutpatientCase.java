@@ -136,10 +136,6 @@ public class UpdateOutpatientCase extends UiBase {
             return;
         }
 
-        consultation.displayConsultation();
-
-        System.out.println("\nWhat would you like to update?");
-
         boolean continueUpdating = true;
         while (continueUpdating) {
             try {
@@ -158,7 +154,7 @@ public class UpdateOutpatientCase extends UiBase {
                 System.out.println("9. Instructions");
                 System.out.println("10. Treatment");
                 System.out.println("11. Lab Test");
-                System.out.println("12. Return to Main Menu");
+                System.out.println("12. Return to Main Menu\n");
 
                 int choice = InputHelper.getValidIndex("Enter your choice", 1, 12);
 
