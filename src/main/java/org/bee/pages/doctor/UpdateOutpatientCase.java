@@ -150,13 +150,12 @@ public class UpdateOutpatientCase extends UiBase {
                 System.out.println("5. Medical History");
                 System.out.println("6. Diagnosis");
                 System.out.println("7. Visit Reason");
-                System.out.println("8. Follow Up Date");
-                System.out.println("9. Instructions");
-                System.out.println("10. Treatment");
-                System.out.println("11. Lab Test");
-                System.out.println("12. Return to Main Menu\n");
+                System.out.println("8. Instructions");
+                System.out.println("9. Treatment");
+                System.out.println("10. Lab Test");
+                System.out.println("11. Return to Main Menu\n");
 
-                int choice = InputHelper.getValidIndex("Enter your choice", 1, 12);
+                int choice = InputHelper.getValidIndex("Enter your choice", 1, 11);
 
                 String consultationId = consultation.getConsultationId();
                 ConsultationUpdater updater = ConsultationUpdater.builder();
@@ -185,18 +184,15 @@ public class UpdateOutpatientCase extends UiBase {
                         updater = updateVisitReasonWithValidation(scanner, updater);
                         break;
                     case 8:
-                        updater = updateFollowUpDateWithValidation(scanner, updater);
-                        break;
-                    case 9:
                         updater = updateInstructionsWithValidation(scanner, updater);
                         break;
-                    case 10:
+                    case 9:
                         updater = updateTreatmentWithValidation(scanner, updater);
                         break;
-                    case 11:
+                    case 10:
                         updater = updateLabTestWithValidation(scanner, updater);
                         break;
-                    case 12:
+                    case 11:
                         updateNeeded = false;
                         break;
                 }
@@ -434,49 +430,6 @@ public class UpdateOutpatientCase extends UiBase {
         }
 
         return updater;
-    }
-
-    private ConsultationUpdater updateFollowUpDateWithValidation(Scanner scanner, ConsultationUpdater updater) {
-        boolean isValid = false;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); // Define the desired format for the input
-
-        while (!isValid) {
-            System.out.println("Enter follow-up date and time (format: yyyy-MM-dd HH:mm):");
-            String followUpDateInput = scanner.nextLine().trim();
-
-            try {
-                // Parse the input string into a LocalDateTime object
-                LocalDateTime followUpDate = LocalDateTime.parse(followUpDateInput, formatter);
-
-                // Update the updater with the new follow-up date
-                updater = updater.followUpDate(followUpDate);
-
-                // Check for validation errors
-                if (updater.getValidationError("followUpDate") != null) {
-                    System.out.println("Error: " + updater.getValidationError("followUpDate"));
-                    System.out.println("Would you like to try again? (Y/N)");
-                    String response = scanner.nextLine().trim().toUpperCase();
-
-                    if (!response.equals("Y")) {
-                        break; // Exit if the user doesn't want to try again
-                    }
-                } else {
-                    System.out.println("Follow-up date updated successfully!");
-                    isValid = true; // Exit the loop if update is successful
-                }
-            } catch (Exception e) {
-                // Handle invalid date format
-                System.out.println("Invalid date format. Please enter a valid date and time in the format yyyy-MM-dd HH:mm.");
-                System.out.println("Would you like to try again? (Y/N)");
-                String response = scanner.nextLine().trim().toUpperCase();
-
-                if (!response.equals("Y")) {
-                    break; // Exit if the user doesn't want to try again
-                }
-            }
-        }
-
-        return updater; // Return the updated ConsultationUpdater
     }
 
     private ConsultationUpdater updateInstructionsWithValidation(Scanner scanner, ConsultationUpdater updater) {
