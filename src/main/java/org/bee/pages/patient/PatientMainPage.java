@@ -19,7 +19,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-
 /**
  * Represents the main page of the Telemedicine Integration System.
  * This page displays a menu of options for the user to navigate to different sections of the application.
@@ -29,6 +28,22 @@ public class PatientMainPage extends UiBase {
     ListView listView;
     private static final HumanController humanController = HumanController.getInstance();
     private static final AppointmentController appointmentController = AppointmentController.getInstance();
+
+    // Helper method for status colors
+    private String getStatusColor(AppointmentStatus status) {
+        return switch (status) {
+            case PENDING -> "\u001B[36m";  // CYAN
+            case ACCEPTED -> "\u001B[32m"; // GREEN
+            case DECLINED, CANCELED -> "\u001B[31m"; // RED
+            default -> "\u001B[0m";        // RESET
+        };
+    }
+
+    // Helper method to truncate long strings
+    private String truncateString(String input, int maxLength) {
+        if (input.length() <= maxLength) return input;
+        return input.substring(0, maxLength - 3) + "...";
+    }
 
     /**
      * Called when the main page's view is created.
@@ -538,6 +553,7 @@ public class PatientMainPage extends UiBase {
         }
     }
 
+
     private void changeAppointmentPrompt() {
         // Get all appointments for the logged-in patient
         SystemUser systemUser = humanController.getLoggedInUser();
@@ -551,24 +567,44 @@ public class PatientMainPage extends UiBase {
 
             boolean viewingAppointments = true;
             while (viewingAppointments) {
-                // Display appointments
-                System.out.println("Your Appointments:");
+                // Display appointments in table format
+                System.out.println("\nYour Appointments:");
+                // Table header
+                System.out.printf("%-5s %-20s %-12s %-8s %-15s%n",
+                        "Index", "Consult Reason", "Date", "Time", "Status");
+
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
                 for (int i = 0; i < appointments.size(); i++) {
                     Appointment appointment = appointments.get(i);
-                    System.out.println((i + 1) + ". " + appointment.getAppointmentTime() + " - " + appointment.getReason());
+                    String statusColor = getStatusColor(appointment.getAppointmentStatus());
+                    String resetColor = "\u001B[0m";
+
+                    System.out.printf("%-5d %-20s %-12s %-8s %s%-15s%s%n",
+                            i + 1,
+                            truncateString(appointment.getReason(), 18),
+                            appointment.getAppointmentTime().format(dateFormatter),
+                            appointment.getAppointmentTime().format(timeFormatter),
+                            statusColor,
+                            appointment.getAppointmentStatus(),
+                            resetColor);
                 }
 
-                System.out.println("Select appointment to view details or change:");
+                // Rest of the existing selection logic
+                System.out.println("\nSelect appointment to view details or change:");
                 int choice = InputHelper.getValidIndex("Enter your choice", 1, appointments.size());
-
                 Appointment selectedAppointment = appointments.get(choice - 1);
 
-                System.out.println("Appointment Details:");
-                System.out.println("Time: " + selectedAppointment.getAppointmentTime());
+                // Display details
+                System.out.println("\nFull Appointment Details:");
+                System.out.println("Time: " + selectedAppointment.getAppointmentTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                 System.out.println("Reason: " + selectedAppointment.getReason());
-                System.out.println("Status: " + selectedAppointment.getAppointmentStatus());
+                System.out.println("Status: " + getStatusColor(selectedAppointment.getAppointmentStatus()) +
+                        selectedAppointment.getAppointmentStatus() + "\u001B[0m");
 
-                System.out.println("Options:");
+                // Options menu
+                System.out.println("\nOptions:");
                 System.out.println("1. Change Appointment");
                 System.out.println("2. Cancel Appointment");
                 System.out.println("3. Back");
@@ -585,7 +621,6 @@ public class PatientMainPage extends UiBase {
                         System.out.println("Enter new appointment date (DD-MM-YYYY):");
                         String newDateStr = scanner.nextLine();
                         try {
-                            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                             newDate = LocalDate.parse(newDateStr, dateFormatter);
                             if (newDate.isBefore(LocalDate.now())) {
                                 System.out.println("The appointment date must be in the future.");
@@ -631,18 +666,34 @@ public class PatientMainPage extends UiBase {
                     Scanner scanner = new Scanner(System.in);
                     String confirm = scanner.nextLine().trim().toUpperCase();
                     if (confirm.equals("Y")) {
-                        // Update appointment status to CANCELED
-                        selectedAppointment.setAppointmentStatus(AppointmentStatus.CANCELED);
-                        appointmentController.updateAppointment(selectedAppointment, selectedAppointment);
-                        appointmentController.removeAppointment(selectedAppointment);
+                        // Create copy with updated status
+                        Appointment canceledAppointment = new Appointment(
+                                selectedAppointment.getPatient(),
+                                selectedAppointment.getReason(),
+                                selectedAppointment.getAppointmentTime(),
+                                AppointmentStatus.CANCELED
+                        );
 
-                        // Update the appointments list in PatientMainPage
-                        appointments.remove(selectedAppointment);
+                        // Preserve other fields
+                        canceledAppointment.setDoctor(selectedAppointment.getDoctor());
+                        canceledAppointment.setHistory(selectedAppointment.getHistory());
 
-                        System.out.println("Appointment canceled successfully.");
-                    } else {
-                        System.out.println("Cancellation canceled.");
+                        // Update in controller
+                        boolean success = appointmentController.updateAppointment(
+                                selectedAppointment,
+                                canceledAppointment
+                        );
+
+                        if (success) {
+                            System.out.println("Appointment canceled successfully.");
+                            // Update local list reference
+                            appointments.set(choice - 1, canceledAppointment);
+                        }
                     }
+
+
+
+
                 } else if (optionChoice == 4) {
                     // Return to main page
                     viewingAppointments = false;
