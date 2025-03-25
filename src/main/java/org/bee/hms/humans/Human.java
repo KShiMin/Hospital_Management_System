@@ -274,7 +274,10 @@ public abstract class Human implements JSONWritable, JSONReadable {
         System.out.printf("\nNationality: " + nationality);
         System.out.println("\n\nDEMOGRAPHIC & RESIDENTIAL INFORMATION");
         System.out.println("---------------------------------------------------------------------");
-        System.out.printf("Contact: " + contact);
+        System.out.printf("\nPersonal Number: " + contact.getPersonalPhone());
+        System.out.printf("\nHome Number: " + contact.getHomePhone());
+        System.out.printf("\nPersonal Email: " + contact.getEmail());
+        System.out.printf("\nCompany Number: " + contact.getCompanyPhone()+"\n");
         System.out.printf("\ntMarital Status: " + maritalStatus);
         System.out.printf("%n%nResidential Status: " + residentialStatus);
         System.out.printf("\nAddress: " + address);

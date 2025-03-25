@@ -58,4 +58,15 @@ public class Contact {
         return personalPhone;
     }
 
+    public String getHomePhone() {
+        return homePhone;
+    }
+
+    public String getCompanyPhone() {
+        return companyPhone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }

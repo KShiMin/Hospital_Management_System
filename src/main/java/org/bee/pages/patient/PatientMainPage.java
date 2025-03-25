@@ -691,9 +691,6 @@ public class PatientMainPage extends UiBase {
                         }
                     }
 
-
-
-
                 } else if (optionChoice == 4) {
                     // Return to main page
                     viewingAppointments = false;
