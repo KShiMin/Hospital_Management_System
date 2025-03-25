@@ -6,6 +6,7 @@
     import org.bee.hms.medical.*;
     import org.bee.ui.*;
     import org.bee.ui.views.ListView;
+    import org.bee.ui.views.MenuView;
     import org.bee.ui.views.TextView;
     import org.bee.utils.InfoUpdaters.ConsultationUpdater;
 
@@ -35,9 +36,7 @@
          */
         @Override
         public View createView() {
-            ListView lv = new ListView(this.canvas, Color.GREEN);
-            lv.setTitleHeader("Main");
-            return lv;
+            return new MenuView(this.canvas, "Main", Color.GREEN, true, false);
         }
 
         /**
@@ -57,38 +56,30 @@
          */
         @Override
         public void OnViewCreated(View parentView) {
-            ListView lv = (ListView) parentView; // Cast the parent view to a list view
+            MenuView menuView = (MenuView) parentView;
             HumanController controller = HumanController.getInstance();
-            lv.setTitleHeader(controller.getUserGreeting());
-            // Menu options
-            //lv.addItem(new TextView(this.canvas, "", Color.GREEN)); // Another empty line
-            //lv.addItem(new TextView(this.canvas, "Telemedicine Services", Color.GREEN, TextStyle.BOLD));
+            menuView.setTitleHeader(controller.getUserGreeting());
 
-            lv.addItem(new TextView(this.canvas, "1. View All Telemedicine cases- To view all telemed cases ", Color.GREEN));
-            //lv.addItem(new TextView(this.canvas, "2. View Billing For Telemedicine Service - To view billing for teleconsultation ", Color.GREEN));
+            MenuView.MenuSection telemedSection = menuView.addSection("Telemedicine Services");
+            telemedSection.addOption(1, "View All Telemedicine cases - To view all telemed cases");
 
-            lv.addItem(new TextView(this.canvas, "", Color.GREEN)); // Another empty line
-            lv.addItem(new TextView(this.canvas, "Outpatient Management Services", Color.GREEN, TextStyle.BOLD));
+            MenuView.MenuSection outpatientSection = menuView.addSection("Outpatient Management Services");
+            outpatientSection.addOption(2, "View All Outpatient Cases - To view all outpatient cases");
+            outpatientSection.addOption(3, "Update Fields For Outpatient cases - To update outpatient cases");
 
-            lv.addItem(new TextView(this.canvas, "3. View All Outpatient Cases - To view all outpatient cases", Color.GREEN));
-            lv.addItem(new TextView(this.canvas, "4. Update Fields For Outpatient cases - To update outpatient cases", Color.GREEN));
-            //lv.addItem(new TextView(this.canvas, "5. View Billing For Telemedicine Service - To view billing outpatient ", Color.GREEN));
+            MenuView.MenuSection insuranceSection = menuView.addSection("Insurance Claim Management");
+            insuranceSection.addOption(4, "New Claim - Submit new claim");
+            insuranceSection.addOption(5, "Manage Claim - Manage existing claims");
+            insuranceSection.addOption(6, "Claim Status - Check existing claim status");
+            insuranceSection.addOption(7, "Change Claim Status - Update existing claim status");
 
-            lv.addItem(new TextView(this.canvas, "", Color.GREEN)); // Another empty line
-            lv.addItem(new TextView(this.canvas, "Insurance Claim Management", Color.GREEN, TextStyle.BOLD));
-            lv.addItem(new TextView(this.canvas, "6. New Claim - Submit new claim", Color.GREEN));
-            lv.addItem(new TextView(this.canvas, "7. Manage Claim - Manage existing claims", Color.GREEN));
-            lv.addItem(new TextView(this.canvas, "8. Claim Status - Check existing claim status", Color.GREEN));
-            lv.addItem(new TextView(this.canvas, "9. Change Claim Status - Update existing claim status", Color.GREEN));
-
-            // Attach user input handlers for navigation
-            lv.attachUserInput("View All Telemedicine cases ", str -> viewAllAppointments());
-            lv.attachUserInput("View All Outpatient Cases ", str -> viewAllOutpatientCases());
-            lv.attachUserInput("Update Fields For Outpatient Cases ", str -> updateOutpatientCase());
-            lv.attachUserInput("New Claim ", str -> ToPage(new NewClaimPage()));
-            lv.attachUserInput("Manage Claim ", str -> ToPage(new ManageClaimPage()));
-            lv.attachUserInput("Claim Status ", str -> ToPage(new ClaimStatusPage()));
-            lv.attachUserInput("Change Claim Status ", str -> ToPage(new ChangeClaimStatusPage()));
+            menuView.attachMenuOptionInput(1, "View All Telemedicine cases", str -> viewAllAppointments());
+            menuView.attachMenuOptionInput(2, "View All Outpatient Cases", str -> viewAllOutpatientCases());
+            menuView.attachMenuOptionInput(3, "Update Fields For Outpatient Cases", str -> updateOutpatientCase());
+            menuView.attachMenuOptionInput(4, "New Claim", str -> ToPage(new NewClaimPage()));
+            menuView.attachMenuOptionInput(5, "Manage Claim", str -> ToPage(new ManageClaimPage()));
+            menuView.attachMenuOptionInput(6, "Claim Status", str -> ToPage(new ClaimStatusPage()));
+            menuView.attachMenuOptionInput(7, "Change Claim Status", str -> ToPage(new ChangeClaimStatusPage()));
 
             canvas.setRequireRedraw(true);
         }
