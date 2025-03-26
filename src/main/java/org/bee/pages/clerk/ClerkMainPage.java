@@ -41,7 +41,7 @@
          * Called after the view has been created and attached to the UI.
          * Populates the view with the main menu options, such as "New Claim", "Manage Claim", "Claim Status", "Change Claim Status".
          * Attaches user input handlers to each menu option to navigate to the corresponding pages.
-         *
+         * <p>
          * Each menu option is associated with a specific user action, such as viewing
          * existing cases, submitting a new claim, or changing the status of a claim.
          *
