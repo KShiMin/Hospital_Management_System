@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 /**
-
- A page that displays all invoice involving
- This class extends UiBase and implements functionality for viewing and managing bill details.
+ * A page that displays all invoices involving the current patient.
+ * <p>
+ * Allows filtering and sorting of bills, and viewing bill details.
  */
-
 public class ViewAllInvoicePage extends UiBase {
 
     private static final HumanController humanController = HumanController.getInstance();
@@ -33,6 +33,9 @@ public class ViewAllInvoicePage extends UiBase {
     private FilterOption currentFilter = FilterOption.ALL;
     private SortOption currentSort = SortOption.DATE_DESC;
 
+    /**
+     * Enum for filter options for bills.
+     */
     private enum FilterOption {
         ALL("All Bills"),
         PAYMENT_PENDING("Pending Payment"),
@@ -52,7 +55,7 @@ public class ViewAllInvoicePage extends UiBase {
     }
 
     /**
-     * Sort options for bills
+     * Enum for sort options for bills.
      */
     private enum SortOption {
         DATE_DESC("Date (Newest First)"),
@@ -71,16 +74,28 @@ public class ViewAllInvoicePage extends UiBase {
         }
     }
 
+    /**
+     * Creates the view to display all invoices.
+     * @return the view to be displayed.
+     */
     @Override
     protected View createView() {
         return selectInvoiceToView();
     }
 
+    /**
+     * Called after view creation.
+     * @param parentView the parent view.
+     */
     @Override
     public void OnViewCreated(View parentView) {
         canvas.setRequireRedraw(true);
     }
 
+    /**
+     * Updates the current filter and refreshes the view.
+     * @param newFilter the new filter to apply.
+     */
     private void changeFilter(FilterOption newFilter) {
         currentFilter = newFilter;
         View refreshedView = selectInvoiceToView();
@@ -88,7 +103,8 @@ public class ViewAllInvoicePage extends UiBase {
     }
 
     /**
-     * Changes the current sort order and refreshes the view
+     * Changes the current sort order and refreshes the view.
+     * @param newSort the new sort order.
      */
     private void changeSort(SortOption newSort) {
         currentSort = newSort;
@@ -96,6 +112,10 @@ public class ViewAllInvoicePage extends UiBase {
         navigateToView(refreshedView);
     }
 
+    /**
+     * Builds and returns the invoice list view based on current filter and sort settings.
+     * @return the view containing the list of invoices.
+     */
     private View selectInvoiceToView() {
         Patient currentPatient = (Patient) humanController.getLoggedInUser();
         billController.loadData();
@@ -177,6 +197,9 @@ public class ViewAllInvoicePage extends UiBase {
         return paginatedMenuView;
     }
 
+    /**
+     * Prompts the user to select a filter option.
+     */
     private void promptForFilterOption() {
         String[] options = new String[FilterOption.values().length];
         for (int i = 0; i < FilterOption.values().length; i++) {
@@ -190,7 +213,7 @@ public class ViewAllInvoicePage extends UiBase {
     }
 
     /**
-     * Prompt user to select a sort option
+     * Prompt user to select a sort option.
      */
     private void promptForSortOption() {
         String[] options = new String[SortOption.values().length];
@@ -204,6 +227,12 @@ public class ViewAllInvoicePage extends UiBase {
         changeSort(SortOption.values()[selected - 1]);
     }
 
+    /**
+     * Filters the bill list according to the given filter option.
+     * @param bills The list of bills to filter.
+     * @param filter The selected filter option.
+     * @return A list of filtered bills.
+     */
     private List<Bill> filterBills(List<Bill> bills, FilterOption filter) {
         return switch (filter) {
             case PAYMENT_PENDING -> bills.stream()
@@ -223,6 +252,12 @@ public class ViewAllInvoicePage extends UiBase {
         };
     }
 
+    /**
+     * Sorts the list of bills based on the selected sort option.
+     * @param bills The list of bills to sort.
+     * @param sort The sort option.
+     * @return A sorted list of bills.
+     */
     private List<Bill> sortBills(List<Bill> bills, SortOption sort) {
         List<Bill> sortedBills = new ArrayList<>(bills);
 
@@ -252,15 +287,21 @@ public class ViewAllInvoicePage extends UiBase {
         return sortedBills;
     }
 
+    /**
+     * Displays the selected bill in a detailed view.
+     * @param bill the bill to be displayed.
+     */
     public void displaySelectedBill(Bill bill) {
         BillDetailsAdapter adapter = new BillDetailsAdapter();
         InvoiceDetailsPage detailsPage = new InvoiceDetailsPage(bill, adapter, this::refreshView);
         ToPage(detailsPage);
     }
 
+    /**
+     * Refreshes the invoice list view.
+     */
     private void refreshView() {
         View refreshedView = selectInvoiceToView();
         navigateToView(refreshedView);
     }
-
 }
