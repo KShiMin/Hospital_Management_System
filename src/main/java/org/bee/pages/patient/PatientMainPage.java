@@ -22,28 +22,47 @@ import java.util.*;
 
 
 /**
- * Represents the main page of the Telemedicine Integration System.
- * This page displays a menu of options for the user to navigate to different sections of the application.
+ * Represents the main page of the Telemedicine Integration System for patients.
+ * This page displays a menu of options for the patient to navigate to different sections of the application.
  * It extends {@link UiBase} and uses a {@link ListView} to present the menu items.
+ * 
+ * <p>The page provides functionality for:
+ * <ul>
+ *   <li>Viewing and updating patient details</li>
+ *   <li>Booking new appointments</li>
+ *   <li>Viewing and changing existing appointments</li>
+ *   <li>Viewing invoices</li>
+ * </ul>
+ * 
+ * @author BEE Healthcare Systems
+ * @version 1.0
+ * @see UiBase
+ * @see MenuView
+ * @see AppointmentController
+ * @see HumanController
  */
 public class PatientMainPage extends UiBase {
+    /** The controller for managing human-related operations */
     private static final HumanController humanController = HumanController.getInstance();
+    
+    /** The controller for managing appointment-related operations */
     private static final AppointmentController appointmentController = AppointmentController.getInstance();
+    
+    /** The formatter for date and time display */
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 
     /**
      * Called when the main page's view is created.
      * Creates a {@link MenuView} to hold the main menu options.
-     * Sets the title header to "Main".
+     * Sets the title header to "Patient Portal" with green color.
      *
      * @return A new {@link MenuView} instance representing the main page's view.
+     * @see MenuView
      */
-
     @Override
     public View createView() {
         return new MenuView(this.canvas, "Patient Portal", Color.GREEN, true, false);
-
     }
 
     /**
@@ -54,7 +73,8 @@ public class PatientMainPage extends UiBase {
      * actions or pages when selected by the user.
      *
      * @param parentView The parent {@link View} to which the main page's UI elements are added.
-     *                   This should be a {@link ListView}, which will display the available menu items.
+     *                   This should be a {@link MenuView}, which will display the available menu items.
+     * @throws ClassCastException if parentView is not a {@link MenuView}
      */
     @Override
     public void OnViewCreated(View parentView) {
@@ -80,6 +100,12 @@ public class PatientMainPage extends UiBase {
         canvas.setRequireRedraw(true);
     }
 
+    /**
+     * Navigates to the patient details page to view or update patient information.
+     * Retrieves the currently logged-in patient and passes it to the PatientDetailsPage.
+     * 
+     * @throws Exception if there is an error retrieving the logged-in user or creating the details page
+     */
     public void viewPatientDetails() {
         try {
             HumanController humanController = HumanController.getInstance();
@@ -98,8 +124,13 @@ public class PatientMainPage extends UiBase {
      * The user is asked to provide a reason for the consultation, medical history,
      * and select an appointment date and time slot. The method validates the input and
      * adds the appointment to the system if all details are provided correctly.
+     * 
+     * <p>If the patient hasn't provided consent previously, a telemedicine consent form 
+     * is displayed, and the patient must agree to proceed with the appointment.</p>
      *
      * @throws IllegalStateException if the current user is not a patient.
+     * @see AppointmentController#addAppointment(Appointment)
+     * @see Appointment
      */
     private void bookAppointmentPrompt() {
         appointmentController.getAllAppointments();
@@ -225,12 +256,16 @@ public class PatientMainPage extends UiBase {
      * Allows the user (patient) to view, change, or cancel an existing appointment.
      * This method displays a list of the patient's current appointments and allows the user to select one to view or modify.
      * The user can choose to change the appointment date and time, cancel the appointment, or return to the main menu.
-     * If changing the appointment, the user is prompted to select a new date and time slot. The new appointment time
-     * must be in the future. If the user decides to cancel the appointment, the appointment is removed from the system.
-     * <p>
-     * The available time slots for appointment changes start at 8:00 AM and are incremented hourly, with 9 available slots.
+     * 
+     * <p>If changing the appointment, the user is prompted to select a new date and time slot. The new appointment time
+     * must be in the future. If the user decides to cancel the appointment, the appointment is removed from the system.</p>
+     * 
+     * <p>The available time slots for appointment changes start at 8:00 AM and are incremented hourly, with 9 available slots.</p>
      *
      * @throws IllegalStateException if the logged-in user is not a patient.
+     * @see AppointmentController#getAppointmentsForPatient(Patient)
+     * @see AppointmentController#updateAppointment(Appointment, Appointment)
+     * @see AppointmentController#removeAppointment(Appointment)
      */
     private void changeAppointmentPrompt() {
         SystemUser systemUser = humanController.getLoggedInUser();
@@ -278,6 +313,13 @@ public class PatientMainPage extends UiBase {
         }
     }
 
+    /**
+     * Displays the options available for managing a selected appointment.
+     * Provides menu options to change the appointment date/time or cancel the appointment.
+     *
+     * @param appointment The selected appointment to manage
+     * @see MenuView
+     */
     private void displayAppointmentOptions(Appointment appointment) {
         MenuView optionsView = new MenuView(
                 canvas,
@@ -297,6 +339,13 @@ public class PatientMainPage extends UiBase {
         navigateToView(optionsView);
     }
 
+    /**
+     * Prompts the user to select a new date and time for an existing appointment.
+     * This method is a placeholder for future implementation.
+     *
+     * @param appointment The appointment to reschedule
+     * @todo Implement date selection with a form or similar UI component
+     */
     private void promptForNewDateTime(Appointment appointment) {
         // Implement date selection with a form or similar UI component
         // After selecting date/time:
@@ -305,6 +354,15 @@ public class PatientMainPage extends UiBase {
         // Show success message
     }
 
+    /**
+     * Confirms with the user whether they want to cancel an appointment.
+     * If confirmed, the appointment status is updated to CANCELED and it is removed from the system.
+     *
+     * @param appointment The appointment to cancel
+     * @see AppointmentController#updateAppointment(Appointment, Appointment)
+     * @see AppointmentController#removeAppointment(Appointment)
+     * @see AppointmentStatus#CANCELED
+     */
     private void confirmCancelAppointment(Appointment appointment) {
         boolean confirm = InputHelper.getYesNoInput(canvas.getTerminal(),
                 "Are you sure you want to cancel this appointment? (y/n)");
@@ -321,6 +379,16 @@ public class PatientMainPage extends UiBase {
         }
     }
 
+    /**
+     * Creates a table view for displaying a list of appointments.
+     * The table includes columns for appointment ID, consultation reason, date and time, and status.
+     * Appointments are color-coded based on their timing and status.
+     *
+     * @param appointments The list of appointments to display in the table
+     * @return A configured TableView containing the appointments
+     * @see TableView
+     * @see AppointmentStatus
+     */
     private TableView<Appointment> createAppointmentTableView(List<Appointment> appointments) {
         TableView<Appointment> tableView = new TableView<>(canvas, "", Color.CYAN);
 
@@ -366,6 +434,5 @@ public class PatientMainPage extends UiBase {
                 .setData(appointments);
 
         return tableView;
-
     }
 }
