@@ -18,35 +18,24 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * Displays detailed information about a patient's invoice and allows payment recording.
+ * Displays the detailed invoice page for a specific {@link Bill} object.
  * <p>
- * This page:
- * <ul>
- *     <li>Displays invoice details using an adapter</li>
- *     <li>Supports payment processing (full/partial)</li>
- *     <li>Handles payment method and amount input from user</li>
- *     <li>Refreshes view and updates billing status after payment</li>
- * </ul>
+ * Allows the patient to review billing details and make full or partial payments using various payment methods.
+ * Updates the billing status accordingly and handles user input and view refresh logic.
  */
 public class InvoiceDetailsPage extends UiBase {
 
-    /** The bill being displayed */
     private final Bill bill;
-
-    /** Adapter for rendering bill details */
     private final IObjectDetailsAdapter<Bill> adapter;
-
-    /** Callback triggered when changes are made */
     private final Runnable onChangeCallback;
-
-    /** Controller for managing bill data */
-    private static final BillController billController = BillController.getInstance();
+    private final static BillController billController = BillController.getInstance();
 
     /**
-     * Constructor to create the invoice details page
-     * @param bill The bill to display
-     * @param adapter Adapter used to present bill data
-     * @param onChangeCallback Callback triggered after payment updates
+     * Constructs a new {@code InvoiceDetailsPage} with the given bill, adapter, and change callback.
+     *
+     * @param bill              the {@link Bill} to be displayed
+     * @param adapter           the adapter for rendering bill details
+     * @param onChangeCallback  a callback to invoke when the bill is modified
      */
     public InvoiceDetailsPage(Bill bill, IObjectDetailsAdapter<Bill> adapter, Runnable onChangeCallback) {
         this.bill = bill;
@@ -55,8 +44,9 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Creates the view showing the bill details
-     * @return View instance displaying invoice information
+     * Creates the main view for the invoice details using an {@link ObjectDetailsPage}.
+     *
+     * @return a {@link View} displaying the bill details
      */
     @Override
     protected View createView() {
@@ -65,8 +55,9 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Initializes the view and adds payment options based on billing status
-     * @param parentView The parent view container
+     * Called after the view is created. Sets up available action buttons depending on bill status.
+     *
+     * @param parentView the parent view component
      */
     @Override
     public void OnViewCreated(View parentView) {
@@ -76,8 +67,10 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Adds "Record Payment" option for eligible billing statuses
-     * @param parentView The view to attach actions to
+     * Attaches payment input flow to the given parent view.
+     * Prompts the user to choose a payment method and enter a payment amount.
+     *
+     * @param parentView the parent view that receives the payment input option
      */
     private void setupPaymentOptions(View parentView) {
         parentView.attachUserInput("Record Payment", input -> {
@@ -88,8 +81,9 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Prompts user to select a payment method and triggers callback
-     * @param callback Consumer that handles selected payment method
+     * Prompts the user to select a payment method from a predefined list.
+     *
+     * @param callback the callback to execute with the selected {@link PaymentMethod}
      */
     private void promptForPaymentMethod(Consumer<PaymentMethod> callback) {
         String[] paymentMethods = {"CASH", "CREDIT_CARD", "PAYNOW"};
@@ -108,9 +102,10 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Prompts user for payment amount and processes full/partial payment
-     * @param maxAmount Maximum allowable payment amount
-     * @param paymentMethod The selected method of payment
+     * Prompts the user to enter a payment amount and records it as full or partial payment.
+     *
+     * @param maxAmount      the maximum payable amount (outstanding balance)
+     * @param paymentMethod  the selected payment method
      */
     private void promptForPaymentAmount(BigDecimal maxAmount, PaymentMethod paymentMethod) {
         try {
@@ -135,8 +130,9 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Saves changes, refreshes view, and displays a success message
-     * @param message Message to display after update
+     * Saves changes to the bill, updates the UI, and refreshes the current view.
+     *
+     * @param message a success message to display to the user
      */
     private void saveChangesAndRefresh(String message) {
         billController.saveData();
@@ -155,9 +151,10 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Attaches payment options to view based on billing status
-     * @param parentView View to attach to
-     * @param status Current billing status
+     * Sets up available action buttons (e.g., payment option) based on the bill status.
+     *
+     * @param parentView the view to attach the actions to
+     * @param status     the current {@link BillingStatus} of the bill
      */
     private void setUpActionButtons(View parentView, BillingStatus status) {
         if ((status == BillingStatus.OVERDUE) || (status == BillingStatus.PARTIALLY_PAID) || (status == BillingStatus.PAYMENT_PENDING)){
@@ -166,8 +163,9 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Saves changes and triggers callback with success message
-     * @param message Message to display after save
+     * Saves billing changes and notifies the user without refreshing the full view.
+     *
+     * @param message success message to display
      */
     private void saveChangesAndNotify(String message) {
         billController.saveData();
@@ -181,9 +179,10 @@ public class InvoiceDetailsPage extends UiBase {
     }
 
     /**
-     * Displays an error message to the user
-     * @param message The message to show
-     * @param e The exception causing the error
+     * Displays an error message on the UI.
+     *
+     * @param message a brief error description
+     * @param e       the exception that caused the error
      */
     private void showError(String message, Exception e) {
         canvas.setSystemMessage(message + ": " + e.getMessage(),
@@ -202,4 +201,5 @@ public class InvoiceDetailsPage extends UiBase {
         }
         return String.format("$%.2f", amount.doubleValue());
     }
+
 }
