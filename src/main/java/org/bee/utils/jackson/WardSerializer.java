@@ -7,7 +7,55 @@ import org.bee.hms.wards.*;
 
 import java.io.IOException;
 
+/**
+ * Custom Jackson serializer for {@link Ward} and its subclasses.
+ * <p>
+ * This serializer converts a {@link Ward} instance into a JSON object,
+ * including type information, name, daily rate, and an inferred {@link WardClassType} based on the concrete
+ * ward type and its daily rate.
+ * </p>
+ *
+ * <p>
+ * The following concrete types are supported:
+ * <ul>
+ *     <li>{@link LabourWard}</li>
+ *     <li>{@link ICUWard}</li>
+ *     <li>{@link DaySurgeryWard}</li>
+ *     <li>{@link GeneralWard}</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * Example output JSON:
+ * <pre>
+ * {
+ *     "type": "labour",
+ *     "name": "Labour Ward A1",
+ *     "dailyRate": 1500,
+ *     "classType": "LABOUR_CLASS_A"
+ * }
+ * </pre>
+ * </p>
+ */
 public class WardSerializer extends JsonSerializer<Ward> {
+
+    /**
+     * Serializes a {@link Ward} into a JSON object.
+     * <p>
+     * The serialization includes:
+     * <ul>
+     *     <li>Ward type (e.g., labour, icu, daySurgery, general)</li>
+     *     <li>Ward name</li>
+     *     <li>Ward daily rate</li>
+     *     <li>Inferred {@link WardClassType} if it can be determined</li>
+     * </ul>
+     * </p>
+     *
+     * @param ward         The {@link Ward} instance to serialize.
+     * @param gen          The {@link JsonGenerator} used to output the JSON.
+     * @param serializers  The {@link SerializerProvider} (not used directly).
+     * @throws IOException if an I/O error occurs during serialization.
+     */
     @Override
     public void serialize(Ward ward, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeStartObject();
@@ -39,8 +87,17 @@ public class WardSerializer extends JsonSerializer<Ward> {
         gen.writeEndObject();
     }
 
+    /**
+     * Infers the {@link WardClassType} based on the {@link Ward} type and its daily rate.
+     * <p>
+     * This method uses hardcoded mappings to associate daily rates with known {@code WardClassType} values.
+     * Returns {@code null} if no match is found.
+     * </p>
+     *
+     * @param ward The {@link Ward} instance to infer the class type for.
+     * @return The corresponding {@link WardClassType} or {@code null} if unknown.
+     */
     private WardClassType inferWardClassType(Ward ward) {
-        // Infer WardClassType based on the concrete class and daily rate
         double rate = ward.getDailyRate();
 
         switch (ward) {
