@@ -16,8 +16,10 @@ import org.bee.utils.formAdapters.PatientFormAdapter;
 import java.util.Objects;
 
 /**
- * A page that displays detailed information about a patient.
- * This is an example of how to use the ObjectDetailsPage with a specific adapter.
+ * A page that displays detailed information about a {@link Patient} object.
+ * <p>
+ * The page includes a detail section and a menu to allow editing of patient information.
+ * It uses the {@link PatientDetailsAdapter} for rendering and {@link PatientFormAdapter} for updating.
  */
 public class PatientDetailsPage extends UiBase {
 
@@ -25,14 +27,19 @@ public class PatientDetailsPage extends UiBase {
     private final PatientDetailsAdapter detailsAdapter = new PatientDetailsAdapter();
 
     /**
-     * Creates a new PatientDetailsPage for the given patient.
+     * Constructs a new {@code PatientDetailsPage} for the specified patient.
      *
-     * @param patient The patient to display details for
+     * @param patient the {@link Patient} whose details will be displayed
      */
     public PatientDetailsPage(Patient patient) {
         this.patient = patient;
     }
 
+    /**
+     * Creates the main view displaying the patient details and action menu.
+     *
+     * @return a {@link View} showing the patient's information and edit option
+     */
     @Override
     public View createView() {
         if (Objects.isNull(patient)) {
@@ -59,14 +66,20 @@ public class PatientDetailsPage extends UiBase {
         return compositeView;
     }
 
+    /**
+     * Called after the view is rendered to the screen.
+     * Forces a UI redraw to ensure consistency.
+     *
+     * @param parentView the view that was just created
+     */
     @Override
     public void OnViewCreated(View parentView) {
         canvas.setRequireRedraw(true);
     }
 
     /**
-     * Handles the action to edit the current patient.
-     * This method opens the GenericUpdatePage with a PatientFormAdapter.
+     * Handles editing the current patient's details.
+     * Launches a {@link GenericUpdatePage} with a {@link PatientFormAdapter} and refreshes the view on success.
      */
     private void editPatient() {
         try {
