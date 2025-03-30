@@ -12,8 +12,8 @@ import org.bee.utils.DataGenerator;
 import org.bee.utils.JSONSerializable;
 
 /**
- * This class represents an appointment for a telemedicine integration for a hospital
- * It provides functionalities to manage appointments involving patients and doctors
+ * This class represents an appointment for a telemedicine integration for a hospital.
+ * It provides functionalities to manage appointments involving patients and doctors.
  * It includes setting and updating appointment time, managing appointment statuses, and handling billing procedures.
  * <p>
  * Example Usage:

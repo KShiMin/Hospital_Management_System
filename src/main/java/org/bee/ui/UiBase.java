@@ -16,20 +16,38 @@ import org.jetbrains.annotations.NotNull;
  * Subclasses must implement {@link #createView()} and {@link #OnViewCreated(View)} to define
  * the UI components and initialization logic for the page.
  */
+
 public abstract class UiBase {
     protected Canvas canvas;
     // the application context
     protected ApplicationContext context;
     protected View lastCreatedView;
-
+    /**
+     *
+     * Sets the canvas for UI component.
+     *
+     *@param canvas the canvas to set
+     */
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
     }
+    /**
+     *
+     * Sets the application context for this UI component.
+     *
+     * @param context the application context to set
+     */
 
     public void setApplicationContext(ApplicationContext context) {
         this.context = context;
     }
-
+    /**
+     *
+     * Creates the view for UI component.
+     * <p>
+     * Must be implemented by subclasses.
+     * @return the created view
+     */
     protected abstract View createView();
 
     /**
@@ -42,7 +60,6 @@ public abstract class UiBase {
         this.lastCreatedView = view;
         return view;
     }
-
 
     /**
      * Any other pre-execution you may want to perform before the view is executed. Such as initializing objects.
@@ -106,7 +123,6 @@ public abstract class UiBase {
         canvas.navigateToPage(page);
     }
 
-
     /**
      * Wraps text with ANSI color codes
      * This works with the terminal's color support to render colored text
@@ -147,7 +163,15 @@ public abstract class UiBase {
         return result.toString().trim();
     }
 
-
+    /**
+     *
+     *Creates a blank list view with a title and content.
+     *
+     *@param titleHeader the title header for the view
+     *@param content the content to display
+     *
+     *@return a composite view containing the title and content
+     */
     @NotNull
     protected CompositeView getBlankListView(String titleHeader, String content) {
         CompositeView compositeView = new CompositeView(this.canvas, titleHeader, Color.YELLOW);
@@ -164,6 +188,5 @@ public abstract class UiBase {
         compositeView.addView(menuView);
         return compositeView;
     }
-
 
 }

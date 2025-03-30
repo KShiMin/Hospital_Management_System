@@ -24,7 +24,7 @@ import org.bee.hms.policy.InsuranceCoverageResult;
 import org.bee.hms.policy.InsurancePolicy;
 
 /**
- * * Manages the storage and retrieval of {@link InsuranceClaim} objects.
+ * Manages the storage and retrieval of {@link InsuranceClaim} objects.
  * Handles loading, saving, and searching of claims.
  * Implemented as a singleton.
  * Extends BaseController to handle JSON persistence.

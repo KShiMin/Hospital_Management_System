@@ -139,7 +139,22 @@ public enum BillingStatus implements JSONSerializable {
     public boolean isInsuranceRelated() {
         return this == INSURANCE_PENDING || this == INSURANCE_APPROVED || this == INSURANCE_REJECTED;
     }
+    /**
 
+     Converts a string representation to a BillingStatus enum constant.
+
+     <p>This method first attempts to match the input string with an enum constant name
+     (case-insensitive). If that fails, it tries to match against the display names
+     of the enum constants.</p>
+     <p>This method is annotated with {@code @JsonCreator} to support JSON deserialization
+     of BillingStatus values.</p>
+     @param value The string value to convert to a BillingStatus enum constant.
+     This can be either the enum constant name (e.g., "PAID") or
+     the display name (e.g., "Paid").
+     @return The corresponding BillingStatus enum constant.
+
+     @throws IllegalArgumentException If no matching BillingStatus is found for the given value.
+     */
     @JsonCreator
     public static BillingStatus fromString(String value) {
         try {
