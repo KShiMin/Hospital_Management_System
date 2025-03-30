@@ -19,6 +19,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents the UI page that displays a list of appointments for the currently logged-in patient.
+ * <p>
+ * This class provides functionality to display all appointments in a paginated list, along with
+ * colored status indicators and the ability to view more detailed information. Patients can
+ * take further actions on appointments, such as making payments or viewing invoices.
+ */
 public class ViewAppointmentPage extends UiBase {
 
     private static final HumanController humanController = HumanController.getInstance();
@@ -26,16 +33,34 @@ public class ViewAppointmentPage extends UiBase {
     private static final int ITEMS_PER_PAGE = 7;
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    /**
+     * Creates the initial view for the appointment page.
+     *
+     * @return a {@link View} displaying all appointments for the current patient
+     */
     @Override
     protected View createView() {
         return viewAllAppointments();
     }
 
+    /**
+     * Hook called after the appointment view is created.
+     * Ensures the canvas is redrawn after rendering.
+     *
+     * @param parentView the parent view to which this page belongs
+     */
     @Override
     public void OnViewCreated(View parentView) {
         canvas.setRequireRedraw(true);
     }
 
+    /**
+     * Builds and returns the main paginated list view showing all appointments for the logged-in patient.
+     * Each appointment is displayed with the scheduled time, reason, and current status.
+     * Provides color-coded formatting and interactive selection to view details.
+     *
+     * @return a {@link View} containing a paginated menu of appointments, or an error/info message if no appointments exist or user is not a patient
+     */
     private View viewAllAppointments() {
         SystemUser systemUser = humanController.getLoggedInUser();
         if (systemUser instanceof Patient patient) {
@@ -121,12 +146,25 @@ public class ViewAppointmentPage extends UiBase {
         return new TextView(canvas, "Access denied. Only patients can view appointments.", Color.RED);
     }
 
+    /**
+     * Navigates to a detailed view of the selected appointment.
+     *
+     * @param appointment   the {@link Appointment} selected by the patient
+     * @param previousView  the view from which the selection was made, used to return if needed
+     */
     private void displayAppointmentDetails(Appointment appointment, View previousView) {
         View appointmentView = createAppointmentCompositeView(appointment);
         canvas.setCurrentView(appointmentView);
         canvas.setRequireRedraw(true);
     }
 
+    /**
+     * Creates a composite view that displays appointment details along with actionable menu options
+     * such as "Make Payment" or "View Invoice", depending on the appointment's status.
+     *
+     * @param appointment the {@link Appointment} to be displayed
+     * @return a {@link View} that includes both detailed information and an optional action menu
+     */
     private View createAppointmentCompositeView(Appointment appointment) {
         DetailsView<Appointment> detailsView = (DetailsView<Appointment>) createAppointmentDetailsView(appointment);
 
@@ -141,12 +179,12 @@ public class ViewAppointmentPage extends UiBase {
             if (appointment.getAppointmentStatus() == AppointmentStatus.PAYMENT_PENDING) {
                 actionSection.addOption(1, "Make Payment");
                 actionMenu.attachMenuOptionInput(1, "Make Payment", input -> {
-                    // open payment?
+                
                 });
             } else if (appointment.getAppointmentStatus() == AppointmentStatus.PAID){
                 actionSection.addOption(1, "View Invoice");
                 actionMenu.attachMenuOptionInput(1, "View Invoice", input -> {
-                    // open bill?
+            
                 });
             }
 
@@ -155,6 +193,13 @@ public class ViewAppointmentPage extends UiBase {
 
         return compositeView;
     }
+
+    /**
+     * Constructs a detailed view for the specified appointment using a detail adapter.
+     *
+     * @param appointment the {@link Appointment} whose details are to be shown
+     * @return a {@link DetailsView} populated with appointment information using {@link AppointmentDetailsViewAdapter}
+     */
     private View createAppointmentDetailsView(Appointment appointment) {
         AppointmentDetailsViewAdapter adapter = new AppointmentDetailsViewAdapter();
 
